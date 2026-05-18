@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎯 Freccette Caorle</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0d0f14;
+    --surface: #161920;
+    --surface2:#1e2230;
+    --border:  #2a2f3f;
+    --accent:  #f0c040;
+    --accent2: #e07830;
+    --green:   #34c978;
+    --red:     #e05050;
+    --blue:    #4d90f0;
+    --text:    #eef0f6;
+    --text2:   #8890a8;
+    --text3:   #4a5068;
+    --r:       12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-icon { font-size: 26px; }
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .header-sub {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 18px 16px 90px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── TAB BAR ── */
+  .tabbar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    height: 64px;
+    z-index: 10;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tab .ti { font-size: 20px; }
+  .tab.active { color: var(--accent); }
+
+  /* ── PAGINE ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── SEZIONE TITOLO ── */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 20px;
+  }
+
+  /* ── STAT GRID ── */
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-lbl {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-head {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── ROW ── */
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(42,47,63,.6);
+  }
+  .row:last-child { border-bottom: none; }
+  .row-l { display: flex; flex-direction: column; gap: 2px; }
+  .row-r { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+  /* ── ITEM CARD (giocatori, partite, gare) ── */
+  .item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .item-name { font-weight: 700; font-size: 16px; }
+  .item-sub  { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .item-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    line-height: 1;
+    text-align: right;
+  }
+  .item-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .item-actions .btn { flex: 1; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .3px;
+  }
+  .bg-green { background: rgba(52,201,120,.15); color: var(--green); border: 1px solid rgba(52,201,120,.3); }
+  .bg-red   { background: rgba(224,80,80,.15);  color: var(--red);   border: 1px solid rgba(224,80,80,.3); }
+  .bg-gold  { background: rgba(240,192,64,.15); color: var(--accent);border: 1px solid rgba(240,192,64,.3); }
+  .bg-blue  { background: rgba(77,144,240,.15); color: var(--blue);  border: 1px solid rgba(77,144,240,.3); }
+
+  /* ── BOTTONI ── */
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 18px;
+    border-radius: var(--r);
+    border: 1px solid transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    min-height: 50px;
+  }
+  .btn:active { opacity: .8; transform: scale(.97); }
+  .btn-primary { background: var(--accent); color: #0d0f14; }
+  .btn-danger  { background: transparent; color: var(--red); border-color: var(--red); }
+  .btn-ghost   { background: transparent; color: var(--text2); border-color: var(--border); }
+  .btn-sm { padding: 10px 14px; font-size: 13px; min-height: 40px; }
+
+  /* ── FORM ── */
+  .fg { margin-bottom: 14px; }
+  .fg label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+  .fg input, .fg select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    padding: 14px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .fg input:focus, .fg select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(240,192,64,.12);
+  }
+  select option { background: var(--surface); }
+
+  /* ── LEG CONTROL ── */
+  .leg-ctrl {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 8px 0;
+  }
+  .leg-btn {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 28px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: .15s;
+  }
+  .leg-btn:active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .leg-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 54px;
+    color: var(--accent);
+    min-width: 50px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* ── ROUND HEADER ── */
+  .round-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 0 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .round-num {
+    background: var(--accent); color: var(--bg);
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .round-label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text3);
+  }
+
+  /* ── MATCH INPUT ROW ── */
+  .match-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  .match-input-names {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .match-input-name { font-size: 13px; font-weight: 600; flex: 1; }
+  .match-input-name.right { text-align: right; }
+  .match-input-vs { font-size: 11px; color: var(--text3); flex-shrink: 0; }
+  .match-input-score {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .match-input-score input {
+    width: 64px; text-align: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+    padding: 8px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); outline: none;
+  }
+  .match-input-score input:focus { border-color: var(--accent); }
+  .match-dash { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--text3); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-sheet {
+    background: var(--surface);
+    border-top: 2px solid var(--accent);
+    border-radius: 18px 18px 0 0;
+    padding: 20px 18px 32px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    animation: slideUp .25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border); border-radius: 4px;
+    margin: 0 auto 18px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px;
+    color: var(--accent); margin-bottom: 18px;
+  }
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; }
+  .btn-row .btn { flex: 1; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 76px; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--surface2); border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    color: var(--text); padding: 12px 22px;
+    border-radius: var(--r); font-size: 13px; font-weight: 600;
+    z-index: 999; opacity: 0; transition: .25s ease;
+    white-space: nowrap; pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.error   { border-top-color: var(--red); }
+  #toast.success { border-top-color: var(--green); }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(13,15,20,.8);
+    display: none; align-items: center; justify-content: center; z-index: 200;
+  }
+  .loading-overlay.show { display: flex; }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 3px solid var(--border); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── UTILS ── */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text3); }
+  .empty-icon { font-size: 44px; margin-bottom: 10px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  .text-green { color: var(--green); }
+  .text-red   { color: var(--red); }
+  .text-gold  { color: var(--accent); }
+  .text-muted { color: var(--text2); }
+  .text-xs    { font-size: 12px; }
+  .text-sm    { font-size: 13px; }
+  .fw7        { font-weight: 700; }
+  .mt12       { margin-top: 12px; }
+  .flex       { display: flex; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap8 { gap: 8px; }
+  .w-full { width: 100%; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">🎯</div>
+  <div>
+    <div class="header-title">Freccette Caorle</div>
+    <div class="header-sub">Campionato Nazionale 2026</div>
+  </div>
+</div>
+
+<!-- CONTENUTO PAGINE -->
+<div class="content">
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="section-title">Dashboard</div>
+    <div class="section-sub">Panoramica campionato</div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="s-g">–</div><div class="stat-lbl">Giocatori</div></div>
+      <div class="stat"><div class="stat-num" id="s-p">–</div><div class="stat-lbl">Partite</div></div>
+      <div class="stat"><div class="stat-num" id="s-sq">–</div><div class="stat-lbl">Gare Squadra</div></div>
+      <div class="stat"><div class="stat-num" id="s-l">–</div><div class="stat-lbl">Leg Vinti</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">🏅 Classifica Leg</div>
+      <div id="home-rank"><div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">🕐 Ultime Partite</div>
+      <div id="home-last"><div class="empty"><div class="empty-icon">📋</div>Nessuna partita</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">🏆 Gare a Squadre</div>
+      <div id="home-teams"><div class="empty"><div class="empty-icon">🏅</div>Nessuna gara</div></div>
+    </div>
+  </div>
+
+  <!-- SINGOLI -->
+  <div class="page" id="page-singoli">
+    <div class="section-title">Singoli</div>
+    <div class="section-sub">1 vs 1 · Best of 3 Leg</div>
+    <button class="btn btn-primary" onclick="openSingolo()" style="margin-bottom:16px">+ Nuova Partita</button>
+    <div id="list-singoli"><div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div></div>
+  </div>
+
+  <!-- SQUADRE -->
+  <div class="page" id="page-squadre">
+    <div class="section-title">Gara a Squadre</div>
+    <div class="section-sub">4 round singoli + 2 doppi · 701</div>
+    <button class="btn btn-primary" onclick="openNuovaGara()" style="margin-bottom:16px">+ Nuova Gara</button>
+    <div id="list-gare"><div class="empty"><div class="empty-icon">🏆</div>Nessuna gara</div></div>
+  </div>
+
+  <!-- GIOCATORI -->
+  <div class="page" id="page-giocatori">
+    <div class="section-title">Giocatori</div>
+    <div class="section-sub">Registro della squadra</div>
+    <button class="btn btn-primary" onclick="openGiocatore()" style="margin-bottom:16px">+ Aggiungi Giocatore</button>
+    <div id="list-giocatori"><div class="empty"><div class="empty-icon">👥</div>Nessun giocatore</div></div>
+  </div>
+
+</div>
+
+<!-- TAB BAR -->
+<div class="tabbar">
+  <button class="tab active" id="tab-home"      onclick="goTo('home')"><span class="ti">🏠</span>Home</button>
+  <button class="tab"        id="tab-singoli"   onclick="goTo('singoli')"><span class="ti">🎯</span>Singoli</button>
+  <button class="tab"        id="tab-squadre"   onclick="goTo('squadre')"><span class="ti">🏆</span>Squadre</button>
+  <button class="tab"        id="tab-giocatori" onclick="goTo('giocatori')"><span class="ti">👥</span>Giocatori</button>
+</div>
+
+<!-- MODALI -->
+
+<!-- Modal Giocatore -->
+<div class="modal-overlay" id="modal-g">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mg-title">NUOVO GIOCATORE</div>
+    <input type="hidden" id="gx-id">
+    <div class="fg"><label>Nome e Cognome</label><input type="text" id="gx-nome" placeholder="Mario Rossi" autocomplete="off"></div>
+    <div class="fg"><label>N° Tessera FIGeS</label><input type="text" id="gx-tess" placeholder="12345"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('modal-g')">Annulla</button>
+      <button class="btn btn-primary" onclick="salvaGiocatore()">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Singolo -->
+<div class="modal-overlay" id="modal-s">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="ms-title">NUOVA PARTITA</div>
+    <input type="hidden" id="sx-id">
+    <div class="fg"><label>Nostro Giocatore</label>
+      <select id="sx-casa"><option value="">— seleziona —</option></select></div>
+    <div class="fg"><label>Avversario</label>
+      <input type="text" id="sx-osp" placeholder="Nome avversario" autocomplete="off"></div>
+    <div class="fg">
+      <label>Leg Vinti — Nostra Squadra</label>
+      <div class="leg-ctrl">
+        <button class="leg-btn" onclick="adjLeg('sx-lc',-1)">−</button>
+        <div class="leg-num" id="sx-lc">0</div>
+        <button class="leg-btn" onclick="adjLeg('sx-lc',1)">+</button>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Leg Vinti — Avversario</label>
+      <div class="leg-ctrl">
+        <button class="leg-btn" onclick="adjLeg('sx-lo',-1)">−</button>
+        <div class="leg-num" id="sx-lo">0</div>
+        <button class="leg-btn" onclick="adjLeg('sx-lo',1)">+</button>
+      </div>
+    </div>
+    <div class="fg"><label>Note (opzionale)</label><input type="text" id="sx-note" placeholder=""></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('modal-s')">Annulla</button>
+      <button class="btn btn-primary" onclick="salvaSingolo()">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Setup Gara Squadre -->
+<div class="modal-overlay" id="modal-sq">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">NUOVA GARA A SQUADRE</div>
+    <div class="fg"><label>Squadra Avversaria</label>
+      <input type="text" id="gs-osp" placeholder="Nome squadra" autocomplete="off"></div>
+    <div class="fg"><label>Nostri Giocatori C1–C4</label></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="fg" style="margin:0"><label>C1</label><select id="gs-c1"><option value="">—</option></select></div>
+      <div class="fg" style="margin:0"><label>C2</label><select id="gs-c2"><option value="">—</option></select></div>
+      <div class="fg" style="margin:0"><label>C3</label><select id="gs-c3"><option value="">—</option></select></div>
+      <div class="fg" style="margin:0"><label>C4</label><select id="gs-c4"><option value="">—</option></select></div>
+    </div>
+    <div class="fg"><label>Avversari O1–O4</label></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="fg" style="margin:0"><label>O1</label><input type="text" id="gs-o1" placeholder="Nome O1"></div>
+      <div class="fg" style="margin:0"><label>O2</label><input type="text" id="gs-o2" placeholder="Nome O2"></div>
+      <div class="fg" style="margin:0"><label>O3</label><input type="text" id="gs-o3" placeholder="Nome O3"></div>
+      <div class="fg" style="margin:0"><label>O4</label><input type="text" id="gs-o4" placeholder="Nome O4"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('modal-sq')">Annulla</button>
+      <button class="btn btn-primary" onclick="avviaGara()">▶ Inizia Gara</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div class="loading-overlay" id="loading"><div class="spinner"></div></div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxT3mh3HdvE4IUCMUzb9NBcJ33IF-AfcLnXutx2d9FXY5oN5b98ZbLTpvwfzclJABugVw/exec';
+
+// ═══════════════════════════════════════════
+// STATO
+// ═══════════════════════════════════════════
+let giocatori = [], singoli = [], gareSquadre = [];
+let garaId = null, garaSetup = null;
+
+// ═══════════════════════════════════════════
+// API — usa GET + payload per evitare CORS
+// ═══════════════════════════════════════════
+async function api(action, data = {}) {
+  const payload = encodeURIComponent(JSON.stringify({ action, ...data }));
+  const url = `${GAS_URL}?payload=${payload}`;
+  try {
+    const r = await fetch(url, { method: 'GET' });
+    return await r.json();
+  } catch(e) {
+    toast('Errore rete: ' + e.message, 'error');
+    return null;
+  }
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  await Promise.all([loadGiocatori(), loadSingoli(), loadGare()]);
+  renderHome();
+});
+
+// ═══════════════════════════════════════════
+// NAVIGAZIONE
+// ═══════════════════════════════════════════
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('tab-' + page).classList.add('active');
+  if (page === 'home') renderHome();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════
+// GIOCATORI
+// ═══════════════════════════════════════════
+async function loadGiocatori() {
+  const r = await api('getGiocatori');
+  if (r && r.ok) { giocatori = r.data; renderGiocatori(); }
+}
+
+function renderGiocatori() {
+  const c = document.getElementById('list-giocatori');
+  if (!giocatori.length) { c.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>Nessun giocatore</div>'; return; }
+  const stats = {};
+  giocatori.forEach(g => stats[g.nome] = { lv: 0, pt: 0, lt: 0 });
+  singoli.forEach(s => {
+    if (stats[s.giocatoreCasa] !== undefined) {
+      stats[s.giocatoreCasa].lv += +s.legCasa;
+      stats[s.giocatoreCasa].lt += +s.legCasa + +s.legOspite;
+      stats[s.giocatoreCasa].pt += 1;
+    }
+  });
+  c.innerHTML = giocatori.map(g => {
+    const st = stats[g.nome] || { lv: 0, pt: 0, lt: 0 };
+    const wp = st.lt > 0 ? Math.round(st.lv / st.lt * 100) : 0;
+    return `<div class="item">
+      <div class="item-header">
+        <div><div class="item-name">${g.nome}</div><div class="item-sub">Tessera: ${g.tessera || '–'}</div></div>
+        <div style="text-align:right">
+          <div style="font-family:'Bebas Neue';font-size:32px;color:var(--accent);line-height:1">${st.lv}</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Leg</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <span class="badge bg-blue">${st.pt} partite</span>
+        <span class="badge ${wp >= 60 ? 'bg-green' : wp >= 40 ? 'bg-gold' : 'bg-red'}">${wp}% win</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openGiocatore('${g.id}')">✏️ Modifica</button>
+        <button class="btn btn-danger btn-sm" onclick="elimGiocatore('${g.id}')">🗑 Elimina</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openGiocatore(id = null) {
+  fillSelects();
+  document.getElementById('gx-id').value = '';
+  document.getElementById('gx-nome').value = '';
+  document.getElementById('gx-tess').value = '';
+  document.getElementById('mg-title').textContent = id ? 'MODIFICA GIOCATORE' : 'NUOVO GIOCATORE';
+  if (id) {
+    const g = giocatori.find(x => x.id === id);
+    if (g) { document.getElementById('gx-id').value = g.id; document.getElementById('gx-nome').value = g.nome; document.getElementById('gx-tess').value = g.tessera; }
+  }
+  document.getElementById('modal-g').classList.add('open');
+}
+
+async function salvaGiocatore() {
+  const id = document.getElementById('gx-id').value;
+  const nome = document.getElementById('gx-nome').value.trim();
+  const tessera = document.getElementById('gx-tess').value.trim();
+  if (!nome) { toast('Inserisci il nome', 'error'); return; }
+  setLoad(true);
+  const r = await api('salvaGiocatore', { id: id || null, nome, tessera });
+  setLoad(false);
+  if (r && r.ok) { toast(r.msg, 'success'); closeModal('modal-g'); await loadGiocatori(); renderHome(); fillSelects(); }
+  else if (r) toast(r.msg, 'error');
+}
+
+async function elimGiocatore(id) {
+  if (!confirm('Eliminare questo giocatore?')) return;
+  setLoad(true); const r = await api('eliminaGiocatore', { id }); setLoad(false);
+  if (r && r.ok) { toast('Eliminato', 'success'); await loadGiocatori(); renderHome(); fillSelects(); }
+}
+
+// ═══════════════════════════════════════════
+// SINGOLI
+// ═══════════════════════════════════════════
+async function loadSingoli() {
+  const r = await api('getSingoli');
+  if (r && r.ok) { singoli = r.data; renderSingoli(); }
+}
+
+function renderSingoli() {
+  const c = document.getElementById('list-singoli');
+  if (!singoli.length) { c.innerHTML = '<div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div>'; return; }
+  c.innerHTML = [...singoli].reverse().map(s => {
+    const lC = +s.legCasa, lO = +s.legOspite;
+    const dt = new Date(s.data); const df = isNaN(dt) ? s.data : dt.toLocaleDateString('it-IT');
+    const vince = lC > lO, par = lC === lO;
+    const badge = par ? '<span class="badge bg-gold">PAREGGIO</span>' : vince ? '<span class="badge bg-green">✓ VINTO</span>' : '<span class="badge bg-red">✗ PERSO</span>';
+    return `<div class="item">
+      <div class="item-header">
+        <div><div class="item-name">${s.giocatoreCasa}</div><div class="item-sub">vs ${s.giocatoreOspite} · ${df}</div></div>
+        <div class="item-score"><span class="${lC > lO ? 'text-green' : 'text-red'}">${lC}</span><span class="text-muted" style="font-size:22px"> – </span><span class="${lO > lC ? 'text-green' : 'text-red'}">${lO}</span></div>
+      </div>
+      <div style="margin-bottom:10px">${badge}${s.note ? `<span class="text-xs text-muted" style="margin-left:8px">${s.note}</span>` : ''}</div>
+      <div class="item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openSingolo('${s.id}')">✏️ Modifica</button>
+        <button class="btn btn-danger btn-sm" onclick="elimSingolo('${s.id}')">🗑 Elimina</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openSingolo(id = null) {
+  fillSelects();
+  document.getElementById('sx-id').value = '';
+  document.getElementById('sx-casa').value = '';
+  document.getElementById('sx-osp').value = '';
+  document.getElementById('sx-lc').textContent = '0';
+  document.getElementById('sx-lo').textContent = '0';
+  document.getElementById('sx-note').value = '';
+  document.getElementById('ms-title').textContent = id ? 'MODIFICA PARTITA' : 'NUOVA PARTITA';
+  if (id) {
+    const s = singoli.find(x => x.id === id);
+    if (s) { document.getElementById('sx-id').value = s.id; document.getElementById('sx-casa').value = s.giocatoreCasa; document.getElementById('sx-osp').value = s.giocatoreOspite; document.getElementById('sx-lc').textContent = s.legCasa; document.getElementById('sx-lo').textContent = s.legOspite; document.getElementById('sx-note').value = s.note || ''; }
+  }
+  document.getElementById('modal-s').classList.add('open');
+}
+
+async function salvaSingolo() {
+  const id = document.getElementById('sx-id').value;
+  const giocatoreCasa = document.getElementById('sx-casa').value;
+  const giocatoreOspite = document.getElementById('sx-osp').value.trim();
+  const legCasa = parseInt(document.getElementById('sx-lc').textContent);
+  const legOspite = parseInt(document.getElementById('sx-lo').textContent);
+  const note = document.getElementById('sx-note').value.trim();
+  if (!giocatoreCasa) { toast('Seleziona il giocatore', 'error'); return; }
+  if (!giocatoreOspite) { toast("Inserisci l'avversario", 'error'); return; }
+  if (legCasa > 2 || legOspite > 2) { toast('Max 2 leg', 'error'); return; }
+  if (legCasa === legOspite && legCasa < 2) { toast('Risultato non valido', 'error'); return; }
+  setLoad(true);
+  const r = await api('salvaSingolo', { id: id || null, giocatoreCasa, giocatoreOspite, legCasa, legOspite, note });
+  setLoad(false);
+  if (r && r.ok) { toast(r.msg, 'success'); closeModal('modal-s'); await loadSingoli(); renderGiocatori(); renderHome(); }
+  else if (r) toast(r.msg, 'error');
+}
+
+async function elimSingolo(id) {
+  if (!confirm('Eliminare questa partita?')) return;
+  setLoad(true); const r = await api('eliminaSingolo', { id }); setLoad(false);
+  if (r && r.ok) { toast('Eliminata', 'success'); await loadSingoli(); renderGiocatori(); renderHome(); }
+}
+
+function adjLeg(elId, d) {
+  const el = document.getElementById(elId);
+  let v = parseInt(el.textContent) + d;
+  if (v < 0) v = 0; if (v > 2) v = 2;
+  el.textContent = v;
+}
+
+// ═══════════════════════════════════════════
+// GARE A SQUADRE
+// ═══════════════════════════════════════════
+async function loadGare() {
+  const r = await api('getGareSquadre');
+  if (r && r.ok) {
+    gareSquadre = r.data.map(g => {
+      try { g.giocatoriCasa = JSON.parse(g.giocatoriCasa); } catch(e) { g.giocatoriCasa = []; }
+      try { g.datiPartita   = JSON.parse(g.datiPartita); }   catch(e) { g.datiPartita = {}; }
+      return g;
+    });
+    renderGare();
+  }
+}
+
+function renderGare() {
+  const c = document.getElementById('list-gare');
+  if (!gareSquadre.length) { c.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Nessuna gara</div>'; return; }
+  c.innerHTML = [...gareSquadre].reverse().map(g => {
+    const dt = new Date(g.data); const df = isNaN(dt) ? g.data : dt.toLocaleDateString('it-IT');
+    const rr = (g.datiPartita || {}).rounds || [];
+    const lC = rr.reduce((a, r) => a + (+r.legCasa || 0), 0);
+    const lO = rr.reduce((a, r) => a + (+r.legOspite || 0), 0);
+    const bc = lC > lO ? 'bg-green' : lC < lO ? 'bg-red' : 'bg-gold';
+    const bt = lC > lO ? 'VITTORIA' : lC < lO ? 'SCONFITTA' : 'PAREGGIO';
+    return `<div class="item">
+      <div class="item-header">
+        <div><div class="item-name">vs ${g.squadraOspite}</div><div class="item-sub">${df}</div></div>
+        <div style="text-align:right">
+          <div style="font-family:'Bebas Neue';font-size:30px;letter-spacing:2px"><span class="${lC>lO?'text-green':'text-red'}">${lC}</span><span class="text-muted"> – </span><span class="${lO>lC?'text-green':'text-red'}">${lO}</span></div>
+          <span class="badge ${bc}">${bt}</span>
+        </div>
+      </div>
+      <div class="text-xs text-muted" style="margin-bottom:10px">${(g.giocatoriCasa||[]).join(', ')}</div>
+      <div class="item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openGara('${g.id}')">✏️ Modifica</button>
+        <button class="btn btn-danger btn-sm" onclick="elimGara('${g.id}')">🗑 Elimina</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNuovaGara() {
+  fillSelects();
+  document.getElementById('gs-osp').value = '';
+  ['gs-c1','gs-c2','gs-c3','gs-c4'].forEach(id => document.getElementById(id).value = '');
+  ['gs-o1','gs-o2','gs-o3','gs-o4'].forEach(id => document.getElementById(id).value = '');
+  garaId = null;
+  document.getElementById('modal-sq').classList.add('open');
+}
+
+function avviaGara() {
+  const ospite = document.getElementById('gs-osp').value.trim();
+  const c = [1,2,3,4].map(i => document.getElementById('gs-c'+i).value);
+  const o = [1,2,3,4].map(i => document.getElementById('gs-o'+i).value.trim());
+  if (!ospite) { toast('Inserisci la squadra avversaria', 'error'); return; }
+  if (c.some(v => !v)) { toast('Seleziona tutti e 4 i giocatori', 'error'); return; }
+  if (o.some(v => !v)) { toast('Inserisci i 4 avversari', 'error'); return; }
+  garaSetup = { ospite, c, o };
+  closeModal('modal-sq');
+  renderGaraForm(null, garaSetup);
+}
+
+async function openGara(id) {
+  const g = gareSquadre.find(x => x.id === id); if (!g) return;
+  garaId = id;
+  const dp = g.datiPartita || {};
+  garaSetup = dp.setup || { ospite: g.squadraOspite, c: g.giocatoriCasa, o: ['O1','O2','O3','O4'] };
+  renderGaraForm(g, garaSetup);
+}
+
+async function elimGara(id) {
+  if (!confirm('Eliminare questa gara?')) return;
+  setLoad(true); const r = await api('eliminaGaraSquadra', { id }); setLoad(false);
+  if (r && r.ok) { toast('Gara eliminata', 'success'); await loadGare(); renderHome(); }
+}
+
+function renderGaraForm(garaEx, setup) {
+  const c = setup.c, o = setup.o;
+  const rounds = [
+    {n:1, label:'1° Round Singoli', pts:[{c:c[0],o:o[0]},{c:c[1],o:o[1]},{c:c[2],o:o[2]},{c:c[3],o:o[3]}]},
+    {n:2, label:'2° Round Singoli', pts:[{c:c[1],o:o[0]},{c:c[0],o:o[1]},{c:c[3],o:o[2]},{c:c[2],o:o[3]}]},
+    {n:3, label:'1° Round Doppi 701', pts:[{c:c[0]+'&'+c[1],o:o[0]+'&'+o[1]},{c:c[2]+'&'+c[3],o:o[2]+'&'+o[3]}]},
+    {n:4, label:'3° Round Singoli', pts:[{c:c[3],o:o[1]},{c:c[0],o:o[2]},{c:c[1],o:o[3]},{c:c[2],o:o[0]}]},
+    {n:5, label:'4° Round Singoli', pts:[{c:c[0],o:o[3]},{c:c[3],o:o[0]},{c:c[2],o:o[1]},{c:c[1],o:o[2]}]},
+    {n:6, label:'2° Round Doppi 701', pts:[{c:c[0]+'&'+c[3],o:o[0]+'&'+o[3]},{c:c[1]+'&'+c[2],o:o[1]+'&'+o[2]}]},
+  ];
+  const exist = {};
+  if (garaEx) { ((garaEx.datiPartita || {}).rounds || []).forEach(r => exist[r.casa+'|'+r.ospite] = r); }
+
+  let html = `<div class="item">
+    <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:var(--accent);margin-bottom:4px">VS ${setup.ospite.toUpperCase()}</div>
+    <div class="text-xs text-muted" style="margin-bottom:14px">${c.join(', ')} · vs · ${o.join(', ')}</div>`;
+
+  rounds.forEach(round => {
+    html += `<div class="round-head"><span class="round-num">${round.n}</span><span class="round-label">${round.label}</span></div>`;
+    round.pts.forEach(p => {
+      const key = p.c+'|'+p.o;
+      const ev = exist[key] || {};
+      const lC = ev.legCasa !== undefined ? ev.legCasa : '';
+      const lO = ev.legOspite !== undefined ? ev.legOspite : '';
+      html += `<div class="match-input">
+        <div class="match-input-names">
+          <span class="match-input-name">${p.c}</span>
+          <span class="match-input-vs">vs</span>
+          <span class="match-input-name right">${p.o}</span>
+        </div>
+        <div class="match-input-score">
+          <input type="number" min="0" max="2" value="${lC}" data-key="${key}" data-side="casa" placeholder="0">
+          <span class="match-dash">–</span>
+          <input type="number" min="0" max="2" value="${lO}" data-key="${key}" data-side="ospite" placeholder="0">
+        </div>
+      </div>`;
+    });
+  });
+
+  html += `<div class="divider"></div>
+    <div class="flex items-center justify-between" style="margin-bottom:16px">
+      <span class="fw7 text-muted">TOTALE LEG</span>
+      <span id="gt-score" style="font-family:'Bebas Neue';font-size:30px;letter-spacing:3px">–</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="annullaGara()">✕ Annulla</button>
+      <button class="btn btn-primary" onclick="salvaGaraForm()">💾 Salva Gara</button>
+    </div>
+  </div>`;
+
+  const cont = document.getElementById('list-gare');
+  cont.innerHTML = html;
+  cont.querySelectorAll('input[type=number]').forEach(i => i.addEventListener('input', updateTot));
+  updateTot();
+}
+
+function updateTot() {
+  const c = document.getElementById('list-gare');
+  let tC = 0, tO = 0;
+  c.querySelectorAll('input[data-side=casa]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tC += v; });
+  c.querySelectorAll('input[data-side=ospite]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tO += v; });
+  const el = document.getElementById('gt-score');
+  if (el) el.innerHTML = `<span class="${tC>tO?'text-green':'text-red'}">${tC}</span><span class="text-muted"> – </span><span class="${tO>tC?'text-green':'text-red'}">${tO}</span>`;
+}
+
+function annullaGara() { garaId = null; garaSetup = null; renderGare(); }
+
+async function salvaGaraForm() {
+  const c = document.getElementById('list-gare');
+  const rm = {};
+  c.querySelectorAll('input[data-key]').forEach(i => {
+    const k = i.dataset.key;
+    if (!rm[k]) rm[k] = { casa: k.split('|')[0], ospite: k.split('|')[1], legCasa: 0, legOspite: 0 };
+    const v = parseInt(i.value) || 0;
+    if (i.dataset.side === 'casa') rm[k].legCasa = v; else rm[k].legOspite = v;
+  });
+  setLoad(true);
+  const r = await api('salvaGaraSquadra', { id: garaId || null, squadraOspite: garaSetup.ospite, giocatoriCasa: garaSetup.c, datiPartita: { setup: garaSetup, rounds: Object.values(rm) } });
+  setLoad(false);
+  if (r && r.ok) { toast(r.msg, 'success'); garaId = null; garaSetup = null; await loadGare(); renderHome(); }
+  else if (r) toast(r.msg, 'error');
+}
+
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
+function renderHome() {
+  document.getElementById('s-g').textContent  = giocatori.length;
+  document.getElementById('s-p').textContent  = singoli.length;
+  document.getElementById('s-sq').textContent = gareSquadre.length;
+  document.getElementById('s-l').textContent  = singoli.reduce((a, s) => a + (+s.legCasa), 0);
+
+  const lm = {};
+  giocatori.forEach(g => lm[g.nome] = 0);
+  singoli.forEach(s => { if (lm[s.giocatoreCasa] !== undefined) lm[s.giocatoreCasa] += (+s.legCasa); });
+  gareSquadre.forEach(g => {
+    const rr = (g.datiPartita || {}).rounds || [];
+    (g.giocatoriCasa || []).forEach(nome => { rr.forEach(r => { if (r.casa && r.casa.includes(nome) && lm[nome] !== undefined) lm[nome] += (+r.legCasa || 0); }); });
+  });
+
+  const sorted = Object.entries(lm).sort((a, b) => b[1] - a[1]);
+  document.getElementById('home-rank').innerHTML = !sorted.length || sorted.every(e => e[1] === 0)
+    ? '<div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div>'
+    : sorted.map(([n, l], i) => `<div class="row"><div class="row-l"><span class="fw7">${n}</span></div><div class="row-r"><span class="badge ${i===0?'bg-gold':i===1?'bg-blue':'bg-green'}">${l} leg</span></div></div>`).join('');
+
+  const ul = [...singoli].reverse().slice(0, 6);
+  document.getElementById('home-last').innerHTML = !ul.length
+    ? '<div class="empty"><div class="empty-icon">📋</div>Nessuna partita</div>'
+    : ul.map(s => { const lC = +s.legCasa, lO = +s.legOspite; return `<div class="row"><div class="row-l"><span class="fw7 text-sm">${s.giocatoreCasa}</span><span class="text-xs text-muted">vs ${s.giocatoreOspite}</span></div><div class="row-r"><span style="font-family:'Bebas Neue';font-size:22px"><span class="${lC>lO?'text-green':'text-red'}">${lC}</span><span class="text-muted">–</span><span class="${lO>lC?'text-green':'text-red'}">${lO}</span></span></div></div>`; }).join('');
+
+  document.getElementById('home-teams').innerHTML = !gareSquadre.length
+    ? '<div class="empty"><div class="empty-icon">🏅</div>Nessuna gara</div>'
+    : [...gareSquadre].reverse().map(g => { const rr = (g.datiPartita||{}).rounds||[]; const lC = rr.reduce((a,r)=>a+(+r.legCasa||0),0); const lO = rr.reduce((a,r)=>a+(+r.legOspite||0),0); const dt = new Date(g.data); const df = isNaN(dt)?g.data:dt.toLocaleDateString('it-IT'); const bc = lC>lO?'bg-green':lC<lO?'bg-red':'bg-gold'; const bt = lC>lO?'VITTORIA':lC<lO?'SCONFITTA':'PAREGGIO'; return `<div class="row"><div class="row-l"><span class="fw7 text-sm">vs ${g.squadraOspite}</span><span class="text-xs text-muted">${df}</span></div><div class="row-r"><span style="font-family:'Bebas Neue';font-size:20px">${lC}–${lO}</span><span class="badge ${bc}">${bt}</span></div></div>`; }).join('');
+}
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function fillSelects() {
+  ['sx-casa','gs-c1','gs-c2','gs-c3','gs-c4'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const cur = el.value;
+    el.innerHTML = '<option value="">— seleziona —</option>' + giocatori.map(g => `<option value="${g.nome}"${g.nome===cur?' selected':''}>${g.nome}</option>`).join('');
+  });
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function setLoad(s)  { document.getElementById('loading').classList.toggle('show', s); }
+
+let tt;
+function toast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'show ' + type;
+  clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+</script>
+</body>
+</html>
