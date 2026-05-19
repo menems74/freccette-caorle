@@ -523,95 +523,45 @@ function renderGiocatori() {
   const c = document.getElementById('list-giocatori');
   if (!giocatori.length) { c.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>Nessun giocatore</div>'; return; }
 
-  // lv = leg vinti, lp = leg persi, lt = leg totali, pt = partite
-  const stats = {};
-  giocatori.forEach(g => stats[g.nome] = { lv: 0, lp: 0, lt: 0, pt: 0 });
+  // Calcola leg vinti: singoli + gare squadre (doppi: 1 leg per giocatore)
+  const legVinti = {};
+  giocatori.forEach(g => legVinti[g.nome] = 0);
 
-  // Singoli
   singoli.forEach(s => {
-    if (stats[s.giocatore] !== undefined) {
-      stats[s.giocatore].lv += s.legVinti || 0;
-      stats[s.giocatore].lp += s.legPersi || 0;
-      stats[s.giocatore].lt += (s.legVinti || 0) + (s.legPersi || 0);
-      stats[s.giocatore].pt += 1;
-    }
+    if (legVinti[s.giocatore] !== undefined)
+      legVinti[s.giocatore] += s.legVinti || 0;
   });
 
-  // Gare a squadre: singoli e doppi
-  // Per i doppi (giocatore con &) ogni giocatore coinvolto conta 1 leg vinto/perso
   gareSquadre.forEach(g => {
     (g.rounds || []).forEach(r => {
-      const isSingolo = !r.giocatore.includes('&');
-      if (isSingolo) {
-        // Round singolo: il giocatore è esattamente uno dei nostri
-        if (stats[r.giocatore] !== undefined) {
-          stats[r.giocatore].lv += r.legVinti || 0;
-          stats[r.giocatore].lp += r.legPersi || 0;
-          stats[r.giocatore].lt += (r.legVinti || 0) + (r.legPersi || 0);
-          stats[r.giocatore].pt += 1;
-        }
+      if (!r.giocatore.includes('&')) {
+        if (legVinti[r.giocatore] !== undefined)
+          legVinti[r.giocatore] += r.legVinti || 0;
       } else {
-        // Round doppio: due giocatori separati da &
-        const nomi = r.giocatore.split('&').map(n => n.trim());
-        nomi.forEach(nome => {
-          if (stats[nome] !== undefined) {
-            // 1 leg vinto/perso per ciascun giocatore del doppio
-            stats[nome].lv += r.legVinti > 0 ? 1 : 0;
-            stats[nome].lp += r.legPersi > 0 ? 1 : 0;
-            stats[nome].lt += 1;
-            stats[nome].pt += 1;
-          }
+        r.giocatore.split('&').map(n => n.trim()).forEach(nome => {
+          if (legVinti[nome] !== undefined)
+            legVinti[nome] += r.legVinti > 0 ? 1 : 0;
         });
       }
     });
   });
 
   c.innerHTML = giocatori.map(g => {
-    const st = stats[g.nome] || { lv: 0, lp: 0, lt: 0, pt: 0 };
-    const wp  = st.lt > 0 ? Math.round(st.lv / st.lt * 100) : 0;
-    const lpp = st.lt > 0 ? Math.round(st.lp / st.lt * 100) : 0;
+    const lv = legVinti[g.nome] || 0;
     return `<div class="item">
-      <!-- Nome + Leg totali -->
       <div class="item-header" style="margin-bottom:12px">
         <div>
-          <div class="item-name" style="font-size:18px">${g.nome}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px">${st.pt} partite · ${st.lt} leg giocati</div>
+          <div class="item-name">${g.nome}</div>
         </div>
         <div style="text-align:right">
-          <div style="font-family:'Bebas Neue';font-size:32px;color:var(--accent2);line-height:1">${st.lv}</div>
+          <div style="font-family:'Bebas Neue';font-size:36px;color:var(--accent2);line-height:1">${lv}</div>
           <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Leg Vinti</div>
         </div>
       </div>
       <!-- Tessera in evidenza -->
-      <div style="background:var(--accent2);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.75)">N° Tessera FIGeS</span>
-        <span style="font-family:'Bebas Neue';font-size:26px;letter-spacing:3px;color:#ffffff">${g.tessera || '–'}</span>
-      </div>
-      <!-- Statistiche win/lose -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center">
-          <div style="font-family:'Bebas Neue';font-size:22px;color:var(--green)">${st.lv}</div>
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)">Vinti</div>
-        </div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center">
-          <div style="font-family:'Bebas Neue';font-size:22px;color:var(--red)">${st.lp}</div>
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)">Persi</div>
-        </div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center">
-          <div style="font-family:'Bebas Neue';font-size:22px;color:var(--accent)">${st.lt}</div>
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)">Totali</div>
-        </div>
-      </div>
-      <!-- % win / % lose -->
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <div style="flex:1;background:#d4f5e2;border:1px solid #a8e6c0;border-radius:8px;padding:8px;text-align:center">
-          <div style="font-family:'Bebas Neue';font-size:24px;color:var(--green)">${wp}%</div>
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)">Vittorie</div>
-        </div>
-        <div style="flex:1;background:#fde8e8;border:1px solid #f5b8b8;border-radius:8px;padding:8px;text-align:center">
-          <div style="font-family:'Bebas Neue';font-size:24px;color:var(--red)">${lpp}%</div>
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)">Sconfitte</div>
-        </div>
+      <div style="background:var(--accent2);border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.75)">N° Tessera FIGeS</span>
+        <span style="font-family:'Bebas Neue';font-size:28px;letter-spacing:3px;color:#ffffff">${g.tessera || '–'}</span>
       </div>
       <div class="item-actions">
         <button class="btn btn-ghost btn-sm" onclick="openGiocatore('${g.id}')">✏️ Modifica</button>
