@@ -630,6 +630,9 @@ let garaSetup   = null;
 // ── INIT ────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([loadGiocatori(), loadSingoli(), loadGare()]);
+  // Tutti i dati pronti: renderizza tutto insieme
+  renderGiocatori();
+  renderSingoli();
   renderHome();
 });
 
@@ -667,7 +670,7 @@ async function loadGiocatori() {
   try {
     const snap = await getDocs(collection(db, 'giocatori'));
     giocatori = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderGiocatori();
+    // renderGiocatori() chiamata solo dopo che tutti i dati sono pronti
   } catch(e) { toast('Errore caricamento giocatori', 'error'); }
 }
 
@@ -751,7 +754,8 @@ window.salvaGiocatore = async () => {
       toast('Giocatore salvato', 'success');
     }
     closeModal('modal-g');
-    await loadGiocatori();
+    await Promise.all([loadGiocatori(), loadSingoli(), loadGare()]);
+    renderGiocatori();
     renderHome();
     fillSelects();
   } catch(e) { toast('Errore: ' + e.message, 'error'); }
@@ -764,7 +768,8 @@ window.elimGiocatore = async (id) => {
   try {
     await deleteDoc(doc(db, 'giocatori', id));
     toast('Eliminato', 'success');
-    await loadGiocatori();
+    await Promise.all([loadGiocatori(), loadSingoli(), loadGare()]);
+    renderGiocatori();
     renderHome();
     fillSelects();
   } catch(e) { toast('Errore: ' + e.message, 'error'); }
@@ -775,7 +780,7 @@ window.elimGiocatore = async (id) => {
 async function loadSingoli() {
   try {
     singoli = await getAll('singoli');
-    renderSingoli();
+    // renderSingoli() chiamata dopo init completo
   } catch(e) { toast('Errore caricamento singoli', 'error'); }
 }
 
@@ -857,6 +862,7 @@ window.salvaSingolo = async () => {
     closeModal('modal-s');
     await loadSingoli();
     renderGiocatori();
+    renderSingoli();
     renderHome();
   } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
@@ -870,6 +876,7 @@ window.elimSingolo = async (id) => {
     toast('Eliminata', 'success');
     await loadSingoli();
     renderGiocatori();
+    renderSingoli();
     renderHome();
   } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
@@ -962,6 +969,7 @@ window.elimGara = async (id) => {
     await deleteDoc(doc(db, 'gareSquadre', id));
     toast('Gara eliminata', 'success');
     await loadGare();
+    renderGiocatori();
     renderHome();
   } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
@@ -1068,6 +1076,7 @@ window.salvaGaraForm = async () => {
     toast('Gara salvata', 'success');
     garaId = null; garaSetup = null;
     await loadGare();
+    renderGiocatori();
     renderHome();
   } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
