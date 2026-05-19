@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎯 Freccette Caorle</title>
+<title>Glintelligenti</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -243,9 +243,9 @@ select option { background:var(--surface); }
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-icon">🎯</div>
+  <img src="glintelligenti_NEW_LOGO.png" alt="Logo" style="width:44px;height:44px;object-fit:contain;border-radius:6px;flex-shrink:0">
   <div>
-    <div class="header-title">Freccette Caorle</div>
+    <div class="header-title">Glintelligenti</div>
     <div class="header-sub">Campionato Nazionale 2026</div>
   </div>
 </div>
@@ -258,13 +258,13 @@ select option { background:var(--surface); }
     <div class="section-title">Dashboard</div>
     <div class="section-sub">Panoramica campionato</div>
     <div class="stats">
-      <div class="stat"><div class="stat-num" id="s-g">–</div><div class="stat-lbl">Giocatori</div></div>
-      <div class="stat"><div class="stat-num" id="s-p">–</div><div class="stat-lbl">Partite</div></div>
+      <div class="stat"><div class="stat-num" id="s-g">–</div><div class="stat-lbl">Singoli Giocati</div></div>
+      <div class="stat"><div class="stat-num" id="s-p">–</div><div class="stat-lbl">Singoli Vinti</div></div>
       <div class="stat"><div class="stat-num" id="s-sq">–</div><div class="stat-lbl">Gare Squadra</div></div>
-      <div class="stat"><div class="stat-num" id="s-l">–</div><div class="stat-lbl">Leg Vinti</div></div>
+      <div class="stat"><div class="stat-num" id="s-l">–</div><div class="stat-lbl">Gare Vinte</div></div>
     </div>
     <div class="card">
-      <div class="card-head">🏅 Classifica Leg</div>
+      <div class="card-head">📊 Statistiche Giocatori</div>
       <div id="home-rank"><div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div></div>
     </div>
     <div class="card">
@@ -905,24 +905,88 @@ window.salvaGaraForm = async () => {
 
 // ── HOME ─────────────────────────────────────────
 function renderHome() {
-  document.getElementById('s-g').textContent  = giocatori.length;
-  document.getElementById('s-p').textContent  = singoli.length;
-  document.getElementById('s-sq').textContent = gareSquadre.length;
-  document.getElementById('s-l').textContent  = singoli.reduce((a, s) => a + (s.legVinti || 0), 0);
+  // ── Box 1: Singoli giocati (totale partite singole di tutti i giocatori)
+  document.getElementById('s-g').textContent  = singoli.length;
 
-  // Classifica
-  const lm = {};
-  giocatori.forEach(g => lm[g.nome] = 0);
-  singoli.forEach(s => { if (lm[s.giocatore] !== undefined) lm[s.giocatore] += (s.legVinti || 0); });
+  // ── Box 2: Singoli vinti (partite in cui legVinti > legPersi)
+  const singVinti = singoli.filter(s => (s.legVinti || 0) > (s.legPersi || 0)).length;
+  document.getElementById('s-p').textContent  = singVinti;
+
+  // ── Box 3: Gare a squadre giocate
+  document.getElementById('s-sq').textContent = gareSquadre.length;
+
+  // ── Box 4: Gare a squadre vinte (legVinti totali > legPersi totali)
+  const gareVinte = gareSquadre.filter(g => {
+    const rr = g.rounds || [];
+    const lV = rr.reduce((a, r) => a + (r.legVinti || 0), 0);
+    const lP = rr.reduce((a, r) => a + (r.legPersi || 0), 0);
+    return lV > lP;
+  }).length;
+  document.getElementById('s-l').textContent  = gareVinte;
+
+  // ── Statistiche giocatori: % vittorie e % sconfitte (singoli + squadre)
+  const stats = {};
+  giocatori.forEach(g => stats[g.nome] = { lv: 0, lp: 0, lt: 0 });
+
+  // Singoli
+  singoli.forEach(s => {
+    if (stats[s.giocatore] !== undefined) {
+      stats[s.giocatore].lv += s.legVinti || 0;
+      stats[s.giocatore].lp += s.legPersi || 0;
+      stats[s.giocatore].lt += (s.legVinti || 0) + (s.legPersi || 0);
+    }
+  });
+
+  // Gare squadre: singoli e doppi
   gareSquadre.forEach(g => {
     (g.rounds || []).forEach(r => {
-      if (lm[r.giocatore] !== undefined) lm[r.giocatore] += (r.legVinti || 0);
+      const isSingolo = !r.giocatore.includes('&');
+      if (isSingolo) {
+        if (stats[r.giocatore] !== undefined) {
+          stats[r.giocatore].lv += r.legVinti || 0;
+          stats[r.giocatore].lp += r.legPersi || 0;
+          stats[r.giocatore].lt += (r.legVinti || 0) + (r.legPersi || 0);
+        }
+      } else {
+        r.giocatore.split('&').map(n => n.trim()).forEach(nome => {
+          if (stats[nome] !== undefined) {
+            stats[nome].lv += r.legVinti > 0 ? 1 : 0;
+            stats[nome].lp += r.legPersi > 0 ? 1 : 0;
+            stats[nome].lt += 1;
+          }
+        });
+      }
     });
   });
-  const sorted = Object.entries(lm).sort((a, b) => b[1] - a[1]);
-  document.getElementById('home-rank').innerHTML = !sorted.length || sorted.every(e => e[1] === 0)
+
+  const sorted = Object.entries(stats).sort((a, b) => {
+    const wpA = a[1].lt > 0 ? a[1].lv / a[1].lt : 0;
+    const wpB = b[1].lt > 0 ? b[1].lv / b[1].lt : 0;
+    return wpB - wpA;
+  });
+
+  document.getElementById('home-rank').innerHTML = !sorted.length
     ? '<div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div>'
-    : sorted.map(([n, l], i) => `<div class="row"><div class="row-l"><span class="fw7">${n}</span></div><div class="row-r"><span class="badge ${i===0?'bg-gold':i===1?'bg-blue':'bg-green'}">${l} leg</span></div></div>`).join('');
+    : sorted.map(([nome, st]) => {
+        const wp  = st.lt > 0 ? Math.round(st.lv / st.lt * 100) : 0;
+        const lpp = st.lt > 0 ? Math.round(st.lp / st.lt * 100) : 0;
+        return `<div class="row" style="align-items:center">
+          <div class="row-l">
+            <span class="fw7">${nome}</span>
+            <span class="text-xs text-muted">${st.lt} leg giocati · ${st.lv} vinti · ${st.lp} persi</span>
+          </div>
+          <div class="row-r" style="gap:6px">
+            <div style="text-align:center">
+              <div style="font-family:'Bebas Neue';font-size:20px;color:var(--green);line-height:1">${wp}%</div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Vinte</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Bebas Neue';font-size:20px;color:var(--red);line-height:1">${lpp}%</div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Perse</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
 
   // Ultime partite
   const ul = [...singoli].reverse().slice(0, 6);
