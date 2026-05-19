@@ -4,8 +4,110 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Glintelligenti</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ── APP SHELL ── */
+.app-shell {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+
+/* ── SIDEBAR DESKTOP ── */
+.sidebar {
+  display: none;
+  width: 220px;
+  min-width: 220px;
+  background: #1B3A6B;
+  padding: 16px 10px;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 12px;
+}
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255,255,255,.12);
+  margin: 6px 0;
+}
+.side-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  background: none;
+  color: rgba(255,255,255,.55);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  width: 100%;
+  text-align: left;
+}
+.side-item i { font-size: 20px; flex-shrink: 0; }
+.side-item:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); }
+.side-item.active { background: #CC1F1F; color: #fff; box-shadow: 0 2px 10px rgba(204,31,31,.4); }
+
+/* ── BARRA MOBILE ── */
+.mob-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #1B3A6B;
+  border-top: 3px solid #CC1F1F;
+  display: flex;
+  height: 64px;
+  z-index: 10;
+  padding: 6px 8px 8px;
+  gap: 6px;
+  box-shadow: 0 -4px 20px rgba(27,58,107,.25);
+}
+.mob-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px;
+  color: rgba(255,255,255,.5);
+  font-size: 24px;
+  cursor: pointer;
+  transition: all .2s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color: transparent;
+}
+.mob-item i { font-size: 24px; transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
+.mob-item.active { background: #CC1F1F; border-color: #CC1F1F; color: #fff; box-shadow: 0 2px 10px rgba(204,31,31,.45); }
+.mob-item.active i { transform: scale(1.2); }
+.mob-item:active { transform: scale(.92); }
+
+/* ── DESKTOP: sidebar visibile, header e barra mobile nascosti ── */
+@media (min-width: 768px) {
+  #mob-header { display: none !important; }
+  .mob-bar    { display: none !important; }
+  .sidebar    { display: flex !important; }
+  .content    { padding-bottom: 40px !important; }
+  .app-shell  { min-height: 100vh; }
+}
+
+/* ── MOBILE: sidebar nascosta, header e barra visibili ── */
+@media (max-width: 767px) {
+  .sidebar   { display: none !important; }
+  #mob-header{ display: flex !important; }
+  .mob-bar   { display: flex !important; }
+}
+
+
 :root {
   --bg:      #f0f2f5;
   --surface: #ffffff;
@@ -309,8 +411,8 @@ select option { background:#fff; color:var(--text); }
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
+<!-- HEADER MOBILE (nascosto su desktop) -->
+<div class="header" id="mob-header">
   <img src="glintelligenti_NEW_LOGO.png" alt="Logo" style="width:44px;height:44px;object-fit:contain;border-radius:6px;flex-shrink:0">
   <div>
     <div class="header-title">Glintelligenti</div>
@@ -318,8 +420,10 @@ select option { background:#fff; color:var(--text); }
   </div>
 </div>
 
+<!-- APP SHELL: sidebar + contenuto -->
+<div class="app-shell">
 <!-- PAGINE -->
-<div class="content">
+<div class="content" id="main-content" style="flex:1;min-width:0;overflow-y:auto">
 
   <!-- HOME -->
   <div class="page active" id="page-home">
@@ -371,13 +475,49 @@ select option { background:#fff; color:var(--text); }
 
 </div>
 
-<!-- TAB BAR -->
-<div class="tabbar">
-  <button class="tab active" id="tab-home"      onclick="goTo('home')"><span class="ti">🏠</span>Home</button>
-  <button class="tab"        id="tab-singoli"   onclick="goTo('singoli')"><span class="ti">🎯</span>Singoli</button>
-  <button class="tab"        id="tab-squadre"   onclick="goTo('squadre')"><span class="ti">🏆</span>Squadre</button>
-  <button class="tab"        id="tab-giocatori" onclick="goTo('giocatori')"><span class="ti">👥</span>Giocatori</button>
+<!-- SIDEBAR DESKTOP -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="glintelligenti_NEW_LOGO.png" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:6px;flex-shrink:0">
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;line-height:1">Glintelligenti</div>
+      <div style="font-size:9px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-top:1px">Campionato 2026</div>
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <button class="side-item active" id="sn-home" onclick="goTo('home')">
+    <i class="ti ti-home"></i><span>Home</span>
+  </button>
+  <button class="side-item" id="sn-singoli" onclick="goTo('singoli')">
+    <i class="ti ti-target"></i><span>Singoli</span>
+  </button>
+  <button class="side-item" id="sn-squadre" onclick="goTo('squadre')">
+    <i class="ti ti-trophy"></i><span>Gara a Squadre</span>
+  </button>
+  <div class="sidebar-divider"></div>
+  <button class="side-item" id="sn-giocatori" onclick="goTo('giocatori')">
+    <i class="ti ti-users"></i><span>Giocatori</span>
+  </button>
 </div>
+
+<!-- BARRA MOBILE -->
+<div class="mob-bar" id="mob-bar">
+  <button class="mob-item active" id="mn-home" onclick="goTo('home')">
+    <i class="ti ti-home"></i>
+  </button>
+  <button class="mob-item" id="mn-singoli" onclick="goTo('singoli')">
+    <i class="ti ti-target"></i>
+  </button>
+  <button class="mob-item" id="mn-squadre" onclick="goTo('squadre')">
+    <i class="ti ti-trophy"></i>
+  </button>
+  <button class="mob-item" id="mn-giocatori" onclick="goTo('giocatori')">
+    <i class="ti ti-users"></i>
+  </button>
+</div>
+
+</div><!-- /main-content -->
+</div><!-- /app-shell -->
 
 <!-- MODAL GIOCATORE -->
 <div class="modal-overlay" id="modal-g">
@@ -496,10 +636,22 @@ window.addEventListener('DOMContentLoaded', async () => {
 // ── NAVIGAZIONE ─────────────────────────────────
 window.goTo = (page) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-  document.getElementById('tab-'  + page).classList.add('active');
+
+  // Sidebar desktop
+  document.querySelectorAll('.side-item').forEach(t => t.classList.remove('active'));
+  const sn = document.getElementById('sn-' + page);
+  if (sn) sn.classList.add('active');
+
+  // Barra mobile
+  document.querySelectorAll('.mob-item').forEach(t => t.classList.remove('active'));
+  const mn = document.getElementById('mn-' + page);
+  if (mn) mn.classList.add('active');
+
   if (page === 'home') renderHome();
+  // Su mobile scrolla in cima al contenuto, su desktop scrolla la finestra
+  const mc = document.getElementById('main-content');
+  if (mc) mc.scrollTop = 0;
   window.scrollTo(0, 0);
 };
 
