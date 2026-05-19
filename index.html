@@ -6,432 +6,237 @@
 <title>🎯 Freccette Caorle</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:      #0d0f14;
-    --surface: #161920;
-    --surface2:#1e2230;
-    --border:  #2a2f3f;
-    --accent:  #f0c040;
-    --accent2: #e07830;
-    --green:   #34c978;
-    --red:     #e05050;
-    --blue:    #4d90f0;
-    --text:    #eef0f6;
-    --text2:   #8890a8;
-    --text3:   #4a5068;
-    --r:       12px;
-  }
+:root {
+  --bg:      #0d0f14;
+  --surface: #161920;
+  --surface2:#1e2230;
+  --border:  #2a2f3f;
+  --accent:  #f0c040;
+  --green:   #34c978;
+  --red:     #e05050;
+  --blue:    #4d90f0;
+  --text:    #eef0f6;
+  --text2:   #8890a8;
+  --text3:   #4a5068;
+  --r:       12px;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    -webkit-font-smoothing: antialiased;
-  }
+/* HEADER */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-icon { font-size: 26px; }
+.header-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; color:var(--accent); line-height:1; }
+.header-sub   { font-size:10px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; margin-top:1px; }
 
-  /* ── HEADER ── */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .header-icon { font-size: 26px; }
-  .header-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .header-sub {
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 1px;
-  }
+/* CONTENT */
+.content { padding: 18px 16px 90px; max-width: 600px; margin: 0 auto; }
 
-  /* ── CONTENT ── */
-  .content {
-    padding: 18px 16px 90px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+/* TAB BAR */
+.tabbar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  height: 64px;
+  z-index: 10;
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.tab .ti { font-size: 20px; }
+.tab.active { color: var(--accent); }
 
-  /* ── TAB BAR ── */
-  .tabbar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex;
-    height: 64px;
-    z-index: 10;
-  }
-  .tab {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    background: none;
-    border: none;
-    color: var(--text3);
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .3px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: color .15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .tab .ti { font-size: 20px; }
-  .tab.active { color: var(--accent); }
+/* PAGINE */
+.page { display: none; }
+.page.active { display: block; }
 
-  /* ── PAGINE ── */
-  .page { display: none; }
-  .page.active { display: block; }
+/* TITOLI */
+.section-title { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:2px; color:var(--accent); margin-bottom:4px; }
+.section-sub   { font-size:12px; color:var(--text3); margin-bottom:20px; }
 
-  /* ── SEZIONE TITOLO ── */
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 2px;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-  .section-sub {
-    font-size: 12px;
-    color: var(--text3);
-    margin-bottom: 20px;
-  }
+/* STAT GRID */
+.stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+.stat  { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:16px; text-align:center; }
+.stat-num { font-family:'Bebas Neue',sans-serif; font-size:38px; color:var(--accent); line-height:1; }
+.stat-lbl { font-size:10px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
 
-  /* ── STAT GRID ── */
-  .stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 18px;
-  }
-  .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 16px;
-    text-align: center;
-  }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 38px;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .stat-lbl {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 4px;
-  }
+/* CARD */
+.card      { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:16px; margin-bottom:12px; }
+.card-head { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
 
-  /* ── CARD ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 16px;
-    margin-bottom: 12px;
-  }
-  .card-head {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text3);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+/* ROW */
+.row   { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(42,47,63,.6); }
+.row:last-child { border-bottom:none; }
+.row-l { display:flex; flex-direction:column; gap:2px; }
+.row-r { display:flex; align-items:center; gap:8px; flex-shrink:0; }
 
-  /* ── ROW ── */
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(42,47,63,.6);
-  }
-  .row:last-child { border-bottom: none; }
-  .row-l { display: flex; flex-direction: column; gap: 2px; }
-  .row-r { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+/* ITEM */
+.item { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r); padding:14px; margin-bottom:10px; }
+.item-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.item-name   { font-weight:700; font-size:16px; }
+.item-sub    { font-size:12px; color:var(--text2); margin-top:2px; }
+.item-score  { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:3px; line-height:1; text-align:right; }
+.item-actions { display:flex; gap:8px; margin-top:12px; }
+.item-actions .btn { flex:1; }
 
-  /* ── ITEM CARD (giocatori, partite, gare) ── */
-  .item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 14px;
-    margin-bottom: 10px;
-  }
-  .item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
-  .item-name { font-weight: 700; font-size: 16px; }
-  .item-sub  { font-size: 12px; color: var(--text2); margin-top: 2px; }
-  .item-score {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    letter-spacing: 3px;
-    line-height: 1;
-    text-align: right;
-  }
-  .item-actions { display: flex; gap: 8px; margin-top: 12px; }
-  .item-actions .btn { flex: 1; }
+/* BADGE */
+.badge   { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:.3px; }
+.bg-green { background:rgba(52,201,120,.15); color:var(--green); border:1px solid rgba(52,201,120,.3); }
+.bg-red   { background:rgba(224,80,80,.15);  color:var(--red);   border:1px solid rgba(224,80,80,.3); }
+.bg-gold  { background:rgba(240,192,64,.15); color:var(--accent);border:1px solid rgba(240,192,64,.3); }
+.bg-blue  { background:rgba(77,144,240,.15); color:var(--blue);  border:1px solid rgba(77,144,240,.3); }
 
-  /* ── BADGE ── */
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .3px;
-  }
-  .bg-green { background: rgba(52,201,120,.15); color: var(--green); border: 1px solid rgba(52,201,120,.3); }
-  .bg-red   { background: rgba(224,80,80,.15);  color: var(--red);   border: 1px solid rgba(224,80,80,.3); }
-  .bg-gold  { background: rgba(240,192,64,.15); color: var(--accent);border: 1px solid rgba(240,192,64,.3); }
-  .bg-blue  { background: rgba(77,144,240,.15); color: var(--blue);  border: 1px solid rgba(77,144,240,.3); }
+/* BOTTONI */
+.btn {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  padding:14px 18px; border-radius:var(--r); border:1px solid transparent;
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:700;
+  cursor:pointer; transition:opacity .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+  width:100%; min-height:50px;
+}
+.btn:active { opacity:.8; transform:scale(.97); }
+.btn-primary { background:var(--accent); color:#0d0f14; }
+.btn-danger  { background:transparent; color:var(--red); border-color:var(--red); }
+.btn-ghost   { background:transparent; color:var(--text2); border-color:var(--border); }
+.btn-sm      { padding:10px 14px; font-size:13px; min-height:40px; }
+.btn-row     { display:flex; gap:10px; margin-top:16px; }
+.btn-row .btn { flex:1; }
 
-  /* ── BOTTONI ── */
-  .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 14px 18px;
-    border-radius: var(--r);
-    border: 1px solid transparent;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity .15s, transform .1s;
-    -webkit-tap-highlight-color: transparent;
-    width: 100%;
-    min-height: 50px;
-  }
-  .btn:active { opacity: .8; transform: scale(.97); }
-  .btn-primary { background: var(--accent); color: #0d0f14; }
-  .btn-danger  { background: transparent; color: var(--red); border-color: var(--red); }
-  .btn-ghost   { background: transparent; color: var(--text2); border-color: var(--border); }
-  .btn-sm { padding: 10px 14px; font-size: 13px; min-height: 40px; }
+/* FORM */
+.fg { margin-bottom:14px; }
+.fg label {
+  display:block; font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:6px;
+}
+.fg input, .fg select {
+  width:100%; background:var(--surface2); border:1px solid var(--border);
+  border-radius:var(--r); color:var(--text); font-family:'Inter',sans-serif;
+  font-size:16px; padding:14px; outline:none;
+  appearance:none; -webkit-appearance:none;
+}
+.fg input:focus, .fg select:focus {
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(240,192,64,.12);
+}
+select option { background:var(--surface); }
 
-  /* ── FORM ── */
-  .fg { margin-bottom: 14px; }
-  .fg label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text3);
-    margin-bottom: 6px;
-  }
-  .fg input, .fg select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    padding: 14px;
-    outline: none;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-  .fg input:focus, .fg select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(240,192,64,.12);
-  }
-  select option { background: var(--surface); }
+/* LEG CONTROL */
+.leg-ctrl { display:flex; align-items:center; justify-content:center; gap:24px; padding:8px 0; }
+.leg-btn {
+  width:60px; height:60px; border-radius:50%;
+  border:2px solid var(--border); background:var(--surface2); color:var(--text);
+  font-size:28px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent; transition:.15s;
+}
+.leg-btn:active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.leg-num { font-family:'Bebas Neue',sans-serif; font-size:54px; color:var(--accent); min-width:50px; text-align:center; line-height:1; }
 
-  /* ── LEG CONTROL ── */
-  .leg-ctrl {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    padding: 8px 0;
-  }
-  .leg-btn {
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-size: 28px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    -webkit-tap-highlight-color: transparent;
-    transition: .15s;
-  }
-  .leg-btn:active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-  .leg-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 54px;
-    color: var(--accent);
-    min-width: 50px;
-    text-align: center;
-    line-height: 1;
-  }
+/* ROUND HEADER */
+.round-head  { display:flex; align-items:center; gap:8px; padding:12px 0 6px; border-bottom:1px solid var(--border); margin-bottom:8px; }
+.round-num   { background:var(--accent); color:var(--bg); width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:13px; flex-shrink:0; }
+.round-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text3); }
 
-  /* ── ROUND HEADER ── */
-  .round-head {
-    display: flex; align-items: center; gap: 8px;
-    padding: 12px 0 6px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 8px;
-  }
-  .round-num {
-    background: var(--accent); color: var(--bg);
-    width: 24px; height: 24px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 13px;
-    flex-shrink: 0;
-  }
-  .round-label {
-    font-size: 12px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 1px; color: var(--text3);
-  }
+/* MATCH INPUT */
+.match-input { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r); padding:12px; margin-bottom:8px; }
+.match-input-names { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:8px; }
+.match-input-name  { font-size:13px; font-weight:600; flex:1; }
+.match-input-name.right { text-align:right; }
+.match-input-vs    { font-size:11px; color:var(--text3); flex-shrink:0; }
+.match-input-score { display:flex; align-items:center; justify-content:center; gap:10px; }
+.match-input-score input {
+  width:64px; text-align:center;
+  font-family:'Bebas Neue',sans-serif; font-size:28px;
+  padding:8px; border-radius:8px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); outline:none;
+}
+.match-input-score input:focus { border-color:var(--accent); }
+.match-dash { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--text3); }
 
-  /* ── MATCH INPUT ROW ── */
-  .match-input {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 12px;
-    margin-bottom: 8px;
-  }
-  .match-input-names {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    gap: 8px;
-  }
-  .match-input-name { font-size: 13px; font-weight: 600; flex: 1; }
-  .match-input-name.right { text-align: right; }
-  .match-input-vs { font-size: 11px; color: var(--text3); flex-shrink: 0; }
-  .match-input-score {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-  }
-  .match-input-score input {
-    width: 64px; text-align: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 28px;
-    padding: 8px; border-radius: 8px;
-    background: var(--surface); border: 1px solid var(--border);
-    color: var(--text); outline: none;
-  }
-  .match-input-score input:focus { border-color: var(--accent); }
-  .match-dash { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--text3); }
+/* MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:100; display:none; align-items:flex-end; }
+.modal-overlay.open { display:flex; }
+.modal-sheet {
+  background:var(--surface); border-top:2px solid var(--accent);
+  border-radius:18px 18px 0 0; padding:20px 18px 32px;
+  width:100%; max-height:90vh; overflow-y:auto;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+.modal-handle { width:36px; height:4px; background:var(--border); border-radius:4px; margin:0 auto 18px; }
+.modal-title  { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; color:var(--accent); margin-bottom:18px; }
 
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.75);
-    z-index: 100;
-    display: none;
-    align-items: flex-end;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal-sheet {
-    background: var(--surface);
-    border-top: 2px solid var(--accent);
-    border-radius: 18px 18px 0 0;
-    padding: 20px 18px 32px;
-    width: 100%;
-    max-height: 88vh;
-    overflow-y: auto;
-    animation: slideUp .25s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .modal-handle {
-    width: 36px; height: 4px;
-    background: var(--border); border-radius: 4px;
-    margin: 0 auto 18px;
-  }
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; letter-spacing: 2px;
-    color: var(--accent); margin-bottom: 18px;
-  }
-  .btn-row { display: flex; gap: 10px; margin-top: 16px; }
-  .btn-row .btn { flex: 1; }
+/* TOAST */
+#toast {
+  position:fixed; bottom:76px; left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--surface2); border:1px solid var(--border); border-top:3px solid var(--accent);
+  color:var(--text); padding:12px 22px; border-radius:var(--r);
+  font-size:13px; font-weight:600; z-index:999;
+  opacity:0; transition:.25s ease; white-space:nowrap; pointer-events:none;
+}
+#toast.show  { opacity:1; transform:translateX(-50%) translateY(0); }
+#toast.error { border-top-color:var(--red); }
+#toast.success { border-top-color:var(--green); }
 
-  /* ── TOAST ── */
-  #toast {
-    position: fixed; bottom: 76px; left: 50%;
-    transform: translateX(-50%) translateY(16px);
-    background: var(--surface2); border: 1px solid var(--border);
-    border-top: 3px solid var(--accent);
-    color: var(--text); padding: 12px 22px;
-    border-radius: var(--r); font-size: 13px; font-weight: 600;
-    z-index: 999; opacity: 0; transition: .25s ease;
-    white-space: nowrap; pointer-events: none;
-  }
-  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  #toast.error   { border-top-color: var(--red); }
-  #toast.success { border-top-color: var(--green); }
+/* LOADING */
+.loading-overlay { position:fixed; inset:0; background:rgba(13,15,20,.8); display:none; align-items:center; justify-content:center; z-index:200; }
+.loading-overlay.show { display:flex; }
+.spinner { width:44px; height:44px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
 
-  /* ── LOADING ── */
-  .loading-overlay {
-    position: fixed; inset: 0;
-    background: rgba(13,15,20,.8);
-    display: none; align-items: center; justify-content: center; z-index: 200;
-  }
-  .loading-overlay.show { display: flex; }
-  .spinner {
-    width: 44px; height: 44px;
-    border: 3px solid var(--border); border-top-color: var(--accent);
-    border-radius: 50%; animation: spin .7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── UTILS ── */
-  .empty { text-align: center; padding: 40px 20px; color: var(--text3); }
-  .empty-icon { font-size: 44px; margin-bottom: 10px; }
-  .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
-  .text-green { color: var(--green); }
-  .text-red   { color: var(--red); }
-  .text-gold  { color: var(--accent); }
-  .text-muted { color: var(--text2); }
-  .text-xs    { font-size: 12px; }
-  .text-sm    { font-size: 13px; }
-  .fw7        { font-weight: 700; }
-  .mt12       { margin-top: 12px; }
-  .flex       { display: flex; }
-  .items-center { align-items: center; }
-  .justify-between { justify-content: space-between; }
-  .gap8 { gap: 8px; }
-  .w-full { width: 100%; }
+/* UTILS */
+.empty { text-align:center; padding:40px 20px; color:var(--text3); }
+.empty-icon { font-size:44px; margin-bottom:10px; }
+.divider { border:none; border-top:1px solid var(--border); margin:14px 0; }
+.text-green { color:var(--green); }
+.text-red   { color:var(--red); }
+.text-gold  { color:var(--accent); }
+.text-muted { color:var(--text2); }
+.text-xs    { font-size:12px; }
+.text-sm    { font-size:13px; }
+.fw7        { font-weight:700; }
+.flex       { display:flex; }
+.items-center { align-items:center; }
+.justify-between { justify-content:space-between; }
+.gap8 { gap:8px; }
 </style>
 </head>
 <body>
@@ -445,7 +250,7 @@
   </div>
 </div>
 
-<!-- CONTENUTO PAGINE -->
+<!-- PAGINE -->
 <div class="content">
 
   <!-- HOME -->
@@ -506,9 +311,7 @@
   <button class="tab"        id="tab-giocatori" onclick="goTo('giocatori')"><span class="ti">👥</span>Giocatori</button>
 </div>
 
-<!-- MODALI -->
-
-<!-- Modal Giocatore -->
+<!-- MODAL GIOCATORE -->
 <div class="modal-overlay" id="modal-g">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -523,30 +326,30 @@
   </div>
 </div>
 
-<!-- Modal Singolo -->
+<!-- MODAL SINGOLO -->
 <div class="modal-overlay" id="modal-s">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title" id="ms-title">NUOVA PARTITA</div>
     <input type="hidden" id="sx-id">
-    <div class="fg"><label>Nostro Giocatore</label>
-      <select id="sx-casa"><option value="">— seleziona —</option></select></div>
+    <div class="fg"><label>Giocatore</label>
+      <select id="sx-giocatore"><option value="">— seleziona —</option></select></div>
     <div class="fg"><label>Avversario</label>
-      <input type="text" id="sx-osp" placeholder="Nome avversario" autocomplete="off"></div>
+      <input type="text" id="sx-avversario" placeholder="Nome avversario" autocomplete="off"></div>
     <div class="fg">
-      <label>Leg Vinti — Nostra Squadra</label>
+      <label>Leg Vinti – Nostra Squadra</label>
       <div class="leg-ctrl">
-        <button class="leg-btn" onclick="adjLeg('sx-lc',-1)">−</button>
-        <div class="leg-num" id="sx-lc">0</div>
-        <button class="leg-btn" onclick="adjLeg('sx-lc',1)">+</button>
+        <button class="leg-btn" onclick="adjLeg('sx-vinti',-1)">−</button>
+        <div class="leg-num" id="sx-vinti">0</div>
+        <button class="leg-btn" onclick="adjLeg('sx-vinti',1)">+</button>
       </div>
     </div>
     <div class="fg">
-      <label>Leg Vinti — Avversario</label>
+      <label>Leg Persi</label>
       <div class="leg-ctrl">
-        <button class="leg-btn" onclick="adjLeg('sx-lo',-1)">−</button>
-        <div class="leg-num" id="sx-lo">0</div>
-        <button class="leg-btn" onclick="adjLeg('sx-lo',1)">+</button>
+        <button class="leg-btn" onclick="adjLeg('sx-persi',-1)">−</button>
+        <div class="leg-num" id="sx-persi">0</div>
+        <button class="leg-btn" onclick="adjLeg('sx-persi',1)">+</button>
       </div>
     </div>
     <div class="fg"><label>Note (opzionale)</label><input type="text" id="sx-note" placeholder=""></div>
@@ -557,7 +360,7 @@
   </div>
 </div>
 
-<!-- Modal Setup Gara Squadre -->
+<!-- MODAL SETUP GARA SQUADRE -->
 <div class="modal-overlay" id="modal-sq">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -588,59 +391,64 @@
 <div id="toast"></div>
 <div class="loading-overlay" id="loading"><div class="spinner"></div></div>
 
-<script>
-// ═══════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxT3mh3HdvE4IUCMUzb9NBcJ33IF-AfcLnXutx2d9FXY5oN5b98ZbLTpvwfzclJABugVw/exec';
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc,
+         updateDoc, deleteDoc, getDocs,
+         query, orderBy, serverTimestamp,
+         getDoc, setDoc }                         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ═══════════════════════════════════════════
-// STATO
-// ═══════════════════════════════════════════
-let giocatori = [], singoli = [], gareSquadre = [];
-let garaId = null, garaSetup = null;
+// ── CONFIG ──────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyDQQI3258PdZNqpcXM3gL-P5vn-g3sRgfo",
+  authDomain:        "freccette-caorle.firebaseapp.com",
+  projectId:         "freccette-caorle",
+  storageBucket:     "freccette-caorle.firebasestorage.app",
+  messagingSenderId: "916951062822",
+  appId:             "1:916951062822:web:28ea26eaa86d6c261809e7"
+};
 
-// ═══════════════════════════════════════════
-// API — usa GET + payload per evitare CORS
-// ═══════════════════════════════════════════
-async function api(action, data = {}) {
-  const payload = encodeURIComponent(JSON.stringify({ action, ...data }));
-  const url = `${GAS_URL}?payload=${payload}`;
-  try {
-    const r = await fetch(url, { method: 'GET' });
-    return await r.json();
-  } catch(e) {
-    toast('Errore rete: ' + e.message, 'error');
-    return null;
-  }
-}
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
 
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', async () => {
+// ── STATO ───────────────────────────────────────
+let giocatori   = [];
+let singoli     = [];
+let gareSquadre = [];
+let garaId      = null;
+let garaSetup   = null;
+
+// ── INIT ────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([loadGiocatori(), loadSingoli(), loadGare()]);
   renderHome();
 });
 
-// ═══════════════════════════════════════════
-// NAVIGAZIONE
-// ═══════════════════════════════════════════
-function goTo(page) {
+// ── NAVIGAZIONE ─────────────────────────────────
+window.goTo = (page) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-  document.getElementById('tab-' + page).classList.add('active');
+  document.getElementById('tab-'  + page).classList.add('active');
   if (page === 'home') renderHome();
   window.scrollTo(0, 0);
+};
+
+// ── FIRESTORE HELPERS ────────────────────────────
+async function getAll(col) {
+  const q = query(collection(db, col), orderBy('data', 'asc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-// ═══════════════════════════════════════════
-// GIOCATORI
-// ═══════════════════════════════════════════
+// ── GIOCATORI ────────────────────────────────────
 async function loadGiocatori() {
-  const r = await api('getGiocatori');
-  if (r && r.ok) { giocatori = r.data; renderGiocatori(); }
+  try {
+    const snap = await getDocs(collection(db, 'giocatori'));
+    giocatori = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderGiocatori();
+  } catch(e) { toast('Errore caricamento giocatori', 'error'); }
 }
 
 function renderGiocatori() {
@@ -649,10 +457,10 @@ function renderGiocatori() {
   const stats = {};
   giocatori.forEach(g => stats[g.nome] = { lv: 0, pt: 0, lt: 0 });
   singoli.forEach(s => {
-    if (stats[s.giocatoreCasa] !== undefined) {
-      stats[s.giocatoreCasa].lv += +s.legCasa;
-      stats[s.giocatoreCasa].lt += +s.legCasa + +s.legOspite;
-      stats[s.giocatoreCasa].pt += 1;
+    if (stats[s.giocatore] !== undefined) {
+      stats[s.giocatore].lv += s.legVinti || 0;
+      stats[s.giocatore].lt += (s.legVinti || 0) + (s.legPersi || 0);
+      stats[s.giocatore].pt += 1;
     }
   });
   c.innerHTML = giocatori.map(g => {
@@ -660,7 +468,10 @@ function renderGiocatori() {
     const wp = st.lt > 0 ? Math.round(st.lv / st.lt * 100) : 0;
     return `<div class="item">
       <div class="item-header">
-        <div><div class="item-name">${g.nome}</div><div class="item-sub">Tessera: ${g.tessera || '–'}</div></div>
+        <div>
+          <div class="item-name">${g.nome}</div>
+          <div class="item-sub">Tessera: ${g.tessera || '–'}</div>
+        </div>
         <div style="text-align:right">
           <div style="font-family:'Bebas Neue';font-size:32px;color:var(--accent);line-height:1">${st.lv}</div>
           <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Leg</div>
@@ -678,57 +489,84 @@ function renderGiocatori() {
   }).join('');
 }
 
-function openGiocatore(id = null) {
+window.openGiocatore = (id = null) => {
   fillSelects();
-  document.getElementById('gx-id').value = '';
+  document.getElementById('gx-id').value   = id || '';
   document.getElementById('gx-nome').value = '';
   document.getElementById('gx-tess').value = '';
   document.getElementById('mg-title').textContent = id ? 'MODIFICA GIOCATORE' : 'NUOVO GIOCATORE';
   if (id) {
     const g = giocatori.find(x => x.id === id);
-    if (g) { document.getElementById('gx-id').value = g.id; document.getElementById('gx-nome').value = g.nome; document.getElementById('gx-tess').value = g.tessera; }
+    if (g) { document.getElementById('gx-nome').value = g.nome; document.getElementById('gx-tess').value = g.tessera || ''; }
   }
   document.getElementById('modal-g').classList.add('open');
-}
+};
 
-async function salvaGiocatore() {
-  const id = document.getElementById('gx-id').value;
-  const nome = document.getElementById('gx-nome').value.trim();
+window.salvaGiocatore = async () => {
+  const id      = document.getElementById('gx-id').value;
+  const nome    = document.getElementById('gx-nome').value.trim();
   const tessera = document.getElementById('gx-tess').value.trim();
   if (!nome) { toast('Inserisci il nome', 'error'); return; }
   setLoad(true);
-  const r = await api('salvaGiocatore', { id: id || null, nome, tessera });
+  try {
+    if (id) {
+      await updateDoc(doc(db, 'giocatori', id), { nome, tessera });
+      toast('Giocatore aggiornato', 'success');
+    } else {
+      await addDoc(collection(db, 'giocatori'), { nome, tessera, data: serverTimestamp() });
+      toast('Giocatore salvato', 'success');
+    }
+    closeModal('modal-g');
+    await loadGiocatori();
+    renderHome();
+    fillSelects();
+  } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
-  if (r && r.ok) { toast(r.msg, 'success'); closeModal('modal-g'); await loadGiocatori(); renderHome(); fillSelects(); }
-  else if (r) toast(r.msg, 'error');
-}
+};
 
-async function elimGiocatore(id) {
+window.elimGiocatore = async (id) => {
   if (!confirm('Eliminare questo giocatore?')) return;
-  setLoad(true); const r = await api('eliminaGiocatore', { id }); setLoad(false);
-  if (r && r.ok) { toast('Eliminato', 'success'); await loadGiocatori(); renderHome(); fillSelects(); }
-}
+  setLoad(true);
+  try {
+    await deleteDoc(doc(db, 'giocatori', id));
+    toast('Eliminato', 'success');
+    await loadGiocatori();
+    renderHome();
+    fillSelects();
+  } catch(e) { toast('Errore: ' + e.message, 'error'); }
+  setLoad(false);
+};
 
-// ═══════════════════════════════════════════
-// SINGOLI
-// ═══════════════════════════════════════════
+// ── SINGOLI ──────────────────────────────────────
 async function loadSingoli() {
-  const r = await api('getSingoli');
-  if (r && r.ok) { singoli = r.data; renderSingoli(); }
+  try {
+    singoli = await getAll('singoli');
+    renderSingoli();
+  } catch(e) { toast('Errore caricamento singoli', 'error'); }
 }
 
 function renderSingoli() {
   const c = document.getElementById('list-singoli');
   if (!singoli.length) { c.innerHTML = '<div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div>'; return; }
   c.innerHTML = [...singoli].reverse().map(s => {
-    const lC = +s.legCasa, lO = +s.legOspite;
-    const dt = new Date(s.data); const df = isNaN(dt) ? s.data : dt.toLocaleDateString('it-IT');
-    const vince = lC > lO, par = lC === lO;
-    const badge = par ? '<span class="badge bg-gold">PAREGGIO</span>' : vince ? '<span class="badge bg-green">✓ VINTO</span>' : '<span class="badge bg-red">✗ PERSO</span>';
+    const lV = s.legVinti || 0, lP = s.legPersi || 0;
+    const data = s.data?.toDate ? s.data.toDate().toLocaleDateString('it-IT') : '–';
+    const vince = lV > lP, par = lV === lP;
+    const badge = par
+      ? '<span class="badge bg-gold">PAREGGIO</span>'
+      : vince ? '<span class="badge bg-green">✓ VINTO</span>'
+               : '<span class="badge bg-red">✗ PERSO</span>';
     return `<div class="item">
       <div class="item-header">
-        <div><div class="item-name">${s.giocatoreCasa}</div><div class="item-sub">vs ${s.giocatoreOspite} · ${df}</div></div>
-        <div class="item-score"><span class="${lC > lO ? 'text-green' : 'text-red'}">${lC}</span><span class="text-muted" style="font-size:22px"> – </span><span class="${lO > lC ? 'text-green' : 'text-red'}">${lO}</span></div>
+        <div>
+          <div class="item-name">${s.giocatore}</div>
+          <div class="item-sub">vs ${s.avversario} · ${data}</div>
+        </div>
+        <div class="item-score">
+          <span class="${lV > lP ? 'text-green' : 'text-red'}">${lV}</span>
+          <span class="text-muted" style="font-size:22px"> – </span>
+          <span class="${lP > lV ? 'text-green' : 'text-red'}">${lP}</span>
+        </div>
       </div>
       <div style="margin-bottom:10px">${badge}${s.note ? `<span class="text-xs text-muted" style="margin-left:8px">${s.note}</span>` : ''}</div>
       <div class="item-actions">
@@ -739,83 +577,107 @@ function renderSingoli() {
   }).join('');
 }
 
-function openSingolo(id = null) {
+window.openSingolo = (id = null) => {
   fillSelects();
-  document.getElementById('sx-id').value = '';
-  document.getElementById('sx-casa').value = '';
-  document.getElementById('sx-osp').value = '';
-  document.getElementById('sx-lc').textContent = '0';
-  document.getElementById('sx-lo').textContent = '0';
-  document.getElementById('sx-note').value = '';
+  document.getElementById('sx-id').value          = id || '';
+  document.getElementById('sx-giocatore').value   = '';
+  document.getElementById('sx-avversario').value  = '';
+  document.getElementById('sx-vinti').textContent = '0';
+  document.getElementById('sx-persi').textContent = '0';
+  document.getElementById('sx-note').value        = '';
   document.getElementById('ms-title').textContent = id ? 'MODIFICA PARTITA' : 'NUOVA PARTITA';
   if (id) {
     const s = singoli.find(x => x.id === id);
-    if (s) { document.getElementById('sx-id').value = s.id; document.getElementById('sx-casa').value = s.giocatoreCasa; document.getElementById('sx-osp').value = s.giocatoreOspite; document.getElementById('sx-lc').textContent = s.legCasa; document.getElementById('sx-lo').textContent = s.legOspite; document.getElementById('sx-note').value = s.note || ''; }
+    if (s) {
+      document.getElementById('sx-giocatore').value   = s.giocatore;
+      document.getElementById('sx-avversario').value  = s.avversario;
+      document.getElementById('sx-vinti').textContent = s.legVinti || 0;
+      document.getElementById('sx-persi').textContent = s.legPersi || 0;
+      document.getElementById('sx-note').value        = s.note || '';
+    }
   }
   document.getElementById('modal-s').classList.add('open');
-}
+};
 
-async function salvaSingolo() {
-  const id = document.getElementById('sx-id').value;
-  const giocatoreCasa = document.getElementById('sx-casa').value;
-  const giocatoreOspite = document.getElementById('sx-osp').value.trim();
-  const legCasa = parseInt(document.getElementById('sx-lc').textContent);
-  const legOspite = parseInt(document.getElementById('sx-lo').textContent);
-  const note = document.getElementById('sx-note').value.trim();
-  if (!giocatoreCasa) { toast('Seleziona il giocatore', 'error'); return; }
-  if (!giocatoreOspite) { toast("Inserisci l'avversario", 'error'); return; }
-  if (legCasa > 2 || legOspite > 2) { toast('Max 2 leg', 'error'); return; }
-  if (legCasa === legOspite && legCasa < 2) { toast('Risultato non valido', 'error'); return; }
+window.salvaSingolo = async () => {
+  const id         = document.getElementById('sx-id').value;
+  const giocatore  = document.getElementById('sx-giocatore').value;
+  const avversario = document.getElementById('sx-avversario').value.trim();
+  const legVinti   = parseInt(document.getElementById('sx-vinti').textContent);
+  const legPersi   = parseInt(document.getElementById('sx-persi').textContent);
+  const note       = document.getElementById('sx-note').value.trim();
+  if (!giocatore)  { toast('Seleziona il giocatore', 'error'); return; }
+  if (!avversario) { toast("Inserisci l'avversario", 'error'); return; }
+  if (legVinti > 2 || legPersi > 2) { toast('Max 2 leg', 'error'); return; }
+  if (legVinti === legPersi && legVinti < 2) { toast('Risultato non valido (best of 3)', 'error'); return; }
   setLoad(true);
-  const r = await api('salvaSingolo', { id: id || null, giocatoreCasa, giocatoreOspite, legCasa, legOspite, note });
+  try {
+    const payload = { giocatore, avversario, legVinti, legPersi, note };
+    if (id) {
+      await updateDoc(doc(db, 'singoli', id), payload);
+      toast('Partita aggiornata', 'success');
+    } else {
+      await addDoc(collection(db, 'singoli'), { ...payload, data: serverTimestamp() });
+      toast('Partita salvata', 'success');
+    }
+    closeModal('modal-s');
+    await loadSingoli();
+    renderGiocatori();
+    renderHome();
+  } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
-  if (r && r.ok) { toast(r.msg, 'success'); closeModal('modal-s'); await loadSingoli(); renderGiocatori(); renderHome(); }
-  else if (r) toast(r.msg, 'error');
-}
+};
 
-async function elimSingolo(id) {
+window.elimSingolo = async (id) => {
   if (!confirm('Eliminare questa partita?')) return;
-  setLoad(true); const r = await api('eliminaSingolo', { id }); setLoad(false);
-  if (r && r.ok) { toast('Eliminata', 'success'); await loadSingoli(); renderGiocatori(); renderHome(); }
-}
+  setLoad(true);
+  try {
+    await deleteDoc(doc(db, 'singoli', id));
+    toast('Eliminata', 'success');
+    await loadSingoli();
+    renderGiocatori();
+    renderHome();
+  } catch(e) { toast('Errore: ' + e.message, 'error'); }
+  setLoad(false);
+};
 
-function adjLeg(elId, d) {
-  const el = document.getElementById(elId);
-  let v = parseInt(el.textContent) + d;
-  if (v < 0) v = 0; if (v > 2) v = 2;
-  el.textContent = v;
-}
-
-// ═══════════════════════════════════════════
-// GARE A SQUADRE
-// ═══════════════════════════════════════════
+// ── GARE A SQUADRE ───────────────────────────────
 async function loadGare() {
-  const r = await api('getGareSquadre');
-  if (r && r.ok) {
-    gareSquadre = r.data.map(g => {
-      try { g.giocatoriCasa = JSON.parse(g.giocatoriCasa); } catch(e) { g.giocatoriCasa = []; }
-      try { g.datiPartita   = JSON.parse(g.datiPartita); }   catch(e) { g.datiPartita = {}; }
-      return g;
-    });
+  try {
+    const snap = await getDocs(query(collection(db, 'gareSquadre'), orderBy('data', 'asc')));
+    gareSquadre = await Promise.all(snap.docs.map(async d => {
+      const gara = { id: d.id, ...d.data() };
+      // Carica rounds sottocollezione
+      const rSnap = await getDocs(collection(db, 'gareSquadre', d.id, 'rounds'));
+      gara.rounds = rSnap.docs.map(r => ({ id: r.id, ...r.data() }));
+      return gara;
+    }));
     renderGare();
-  }
+  } catch(e) { toast('Errore caricamento gare', 'error'); }
 }
 
 function renderGare() {
   const c = document.getElementById('list-gare');
   if (!gareSquadre.length) { c.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Nessuna gara</div>'; return; }
   c.innerHTML = [...gareSquadre].reverse().map(g => {
-    const dt = new Date(g.data); const df = isNaN(dt) ? g.data : dt.toLocaleDateString('it-IT');
-    const rr = (g.datiPartita || {}).rounds || [];
-    const lC = rr.reduce((a, r) => a + (+r.legCasa || 0), 0);
-    const lO = rr.reduce((a, r) => a + (+r.legOspite || 0), 0);
-    const bc = lC > lO ? 'bg-green' : lC < lO ? 'bg-red' : 'bg-gold';
-    const bt = lC > lO ? 'VITTORIA' : lC < lO ? 'SCONFITTA' : 'PAREGGIO';
+    const rr = g.rounds || [];
+    const lV = rr.reduce((a, r) => a + (r.legVinti || 0), 0);
+    const lP = rr.reduce((a, r) => a + (r.legPersi || 0), 0);
+    const data = g.data?.toDate ? g.data.toDate().toLocaleDateString('it-IT') : '–';
+    const bc = lV > lP ? 'bg-green' : lV < lP ? 'bg-red' : 'bg-gold';
+    const bt = lV > lP ? 'VITTORIA' : lV < lP ? 'SCONFITTA' : 'PAREGGIO';
     return `<div class="item">
       <div class="item-header">
-        <div><div class="item-name">vs ${g.squadraOspite}</div><div class="item-sub">${df}</div></div>
+        <div>
+          <div class="item-name">vs ${g.squadraOspite}</div>
+          <div class="item-sub">${data}</div>
+        </div>
         <div style="text-align:right">
-          <div style="font-family:'Bebas Neue';font-size:30px;letter-spacing:2px"><span class="${lC>lO?'text-green':'text-red'}">${lC}</span><span class="text-muted"> – </span><span class="${lO>lC?'text-green':'text-red'}">${lO}</span></div>
+          <div style="font-family:'Bebas Neue';font-size:30px;letter-spacing:2px">
+            <span class="${lV>lP?'text-green':'text-red'}">${lV}</span>
+            <span class="text-muted"> – </span>
+            <span class="${lP>lV?'text-green':'text-red'}">${lP}</span>
+          </div>
           <span class="badge ${bc}">${bt}</span>
         </div>
       </div>
@@ -828,53 +690,61 @@ function renderGare() {
   }).join('');
 }
 
-function openNuovaGara() {
+window.openNuovaGara = () => {
   fillSelects();
   document.getElementById('gs-osp').value = '';
   ['gs-c1','gs-c2','gs-c3','gs-c4'].forEach(id => document.getElementById(id).value = '');
   ['gs-o1','gs-o2','gs-o3','gs-o4'].forEach(id => document.getElementById(id).value = '');
   garaId = null;
   document.getElementById('modal-sq').classList.add('open');
-}
+};
 
-function avviaGara() {
+window.avviaGara = () => {
   const ospite = document.getElementById('gs-osp').value.trim();
   const c = [1,2,3,4].map(i => document.getElementById('gs-c'+i).value);
   const o = [1,2,3,4].map(i => document.getElementById('gs-o'+i).value.trim());
-  if (!ospite) { toast('Inserisci la squadra avversaria', 'error'); return; }
+  if (!ospite)         { toast('Inserisci la squadra avversaria', 'error'); return; }
   if (c.some(v => !v)) { toast('Seleziona tutti e 4 i giocatori', 'error'); return; }
   if (o.some(v => !v)) { toast('Inserisci i 4 avversari', 'error'); return; }
   garaSetup = { ospite, c, o };
   closeModal('modal-sq');
   renderGaraForm(null, garaSetup);
-}
+};
 
-async function openGara(id) {
+window.openGara = async (id) => {
   const g = gareSquadre.find(x => x.id === id); if (!g) return;
   garaId = id;
-  const dp = g.datiPartita || {};
-  garaSetup = dp.setup || { ospite: g.squadraOspite, c: g.giocatoriCasa, o: ['O1','O2','O3','O4'] };
+  garaSetup = g.setup || { ospite: g.squadraOspite, c: g.giocatoriCasa || [], o: ['O1','O2','O3','O4'] };
   renderGaraForm(g, garaSetup);
-}
+};
 
-async function elimGara(id) {
+window.elimGara = async (id) => {
   if (!confirm('Eliminare questa gara?')) return;
-  setLoad(true); const r = await api('eliminaGaraSquadra', { id }); setLoad(false);
-  if (r && r.ok) { toast('Gara eliminata', 'success'); await loadGare(); renderHome(); }
-}
+  setLoad(true);
+  try {
+    // Elimina rounds sottocollezione
+    const rSnap = await getDocs(collection(db, 'gareSquadre', id, 'rounds'));
+    await Promise.all(rSnap.docs.map(r => deleteDoc(r.ref)));
+    await deleteDoc(doc(db, 'gareSquadre', id));
+    toast('Gara eliminata', 'success');
+    await loadGare();
+    renderHome();
+  } catch(e) { toast('Errore: ' + e.message, 'error'); }
+  setLoad(false);
+};
 
 function renderGaraForm(garaEx, setup) {
   const c = setup.c, o = setup.o;
   const rounds = [
-    {n:1, label:'1° Round Singoli', pts:[{c:c[0],o:o[0]},{c:c[1],o:o[1]},{c:c[2],o:o[2]},{c:c[3],o:o[3]}]},
-    {n:2, label:'2° Round Singoli', pts:[{c:c[1],o:o[0]},{c:c[0],o:o[1]},{c:c[3],o:o[2]},{c:c[2],o:o[3]}]},
-    {n:3, label:'1° Round Doppi 701', pts:[{c:c[0]+'&'+c[1],o:o[0]+'&'+o[1]},{c:c[2]+'&'+c[3],o:o[2]+'&'+o[3]}]},
-    {n:4, label:'3° Round Singoli', pts:[{c:c[3],o:o[1]},{c:c[0],o:o[2]},{c:c[1],o:o[3]},{c:c[2],o:o[0]}]},
-    {n:5, label:'4° Round Singoli', pts:[{c:c[0],o:o[3]},{c:c[3],o:o[0]},{c:c[2],o:o[1]},{c:c[1],o:o[2]}]},
-    {n:6, label:'2° Round Doppi 701', pts:[{c:c[0]+'&'+c[3],o:o[0]+'&'+o[3]},{c:c[1]+'&'+c[2],o:o[1]+'&'+o[2]}]},
+    {n:1, label:'1° Round Singoli',  pts:[{c:c[0],o:o[0]},{c:c[1],o:o[1]},{c:c[2],o:o[2]},{c:c[3],o:o[3]}]},
+    {n:2, label:'2° Round Singoli',  pts:[{c:c[1],o:o[0]},{c:c[0],o:o[1]},{c:c[3],o:o[2]},{c:c[2],o:o[3]}]},
+    {n:3, label:'1° Round Doppi 701',pts:[{c:c[0]+'&'+c[1],o:o[0]+'&'+o[1]},{c:c[2]+'&'+c[3],o:o[2]+'&'+o[3]}]},
+    {n:4, label:'3° Round Singoli',  pts:[{c:c[3],o:o[1]},{c:c[0],o:o[2]},{c:c[1],o:o[3]},{c:c[2],o:o[0]}]},
+    {n:5, label:'4° Round Singoli',  pts:[{c:c[0],o:o[3]},{c:c[3],o:o[0]},{c:c[2],o:o[1]},{c:c[1],o:o[2]}]},
+    {n:6, label:'2° Round Doppi 701',pts:[{c:c[0]+'&'+c[3],o:o[0]+'&'+o[3]},{c:c[1]+'&'+c[2],o:o[1]+'&'+o[2]}]},
   ];
   const exist = {};
-  if (garaEx) { ((garaEx.datiPartita || {}).rounds || []).forEach(r => exist[r.casa+'|'+r.ospite] = r); }
+  if (garaEx) { (garaEx.rounds || []).forEach(r => exist[r.giocatore+'|'+r.avversario] = r); }
 
   let html = `<div class="item">
     <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:var(--accent);margin-bottom:4px">VS ${setup.ospite.toUpperCase()}</div>
@@ -884,9 +754,9 @@ function renderGaraForm(garaEx, setup) {
     html += `<div class="round-head"><span class="round-num">${round.n}</span><span class="round-label">${round.label}</span></div>`;
     round.pts.forEach(p => {
       const key = p.c+'|'+p.o;
-      const ev = exist[key] || {};
-      const lC = ev.legCasa !== undefined ? ev.legCasa : '';
-      const lO = ev.legOspite !== undefined ? ev.legOspite : '';
+      const ev  = exist[key] || {};
+      const lV  = ev.legVinti !== undefined ? ev.legVinti : '';
+      const lP  = ev.legPersi !== undefined ? ev.legPersi : '';
       html += `<div class="match-input">
         <div class="match-input-names">
           <span class="match-input-name">${p.c}</span>
@@ -894,9 +764,9 @@ function renderGaraForm(garaEx, setup) {
           <span class="match-input-name right">${p.o}</span>
         </div>
         <div class="match-input-score">
-          <input type="number" min="0" max="2" value="${lC}" data-key="${key}" data-side="casa" placeholder="0">
+          <input type="number" min="0" max="2" value="${lV}" data-key="${key}" data-c="${p.c}" data-o="${p.o}" data-side="vinti" placeholder="0">
           <span class="match-dash">–</span>
-          <input type="number" min="0" max="2" value="${lO}" data-key="${key}" data-side="ospite" placeholder="0">
+          <input type="number" min="0" max="2" value="${lP}" data-key="${key}" data-c="${p.c}" data-o="${p.o}" data-side="persi" placeholder="0">
         </div>
       </div>`;
     });
@@ -921,85 +791,134 @@ function renderGaraForm(garaEx, setup) {
 
 function updateTot() {
   const c = document.getElementById('list-gare');
-  let tC = 0, tO = 0;
-  c.querySelectorAll('input[data-side=casa]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tC += v; });
-  c.querySelectorAll('input[data-side=ospite]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tO += v; });
+  let tV = 0, tP = 0;
+  c.querySelectorAll('input[data-side=vinti]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tV += v; });
+  c.querySelectorAll('input[data-side=persi]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tP += v; });
   const el = document.getElementById('gt-score');
-  if (el) el.innerHTML = `<span class="${tC>tO?'text-green':'text-red'}">${tC}</span><span class="text-muted"> – </span><span class="${tO>tC?'text-green':'text-red'}">${tO}</span>`;
+  if (el) el.innerHTML = `<span class="${tV>tP?'text-green':'text-red'}">${tV}</span><span class="text-muted"> – </span><span class="${tP>tV?'text-green':'text-red'}">${tP}</span>`;
 }
 
-function annullaGara() { garaId = null; garaSetup = null; renderGare(); }
+window.annullaGara = () => { garaId = null; garaSetup = null; renderGare(); };
 
-async function salvaGaraForm() {
-  const c = document.getElementById('list-gare');
+window.salvaGaraForm = async () => {
+  const cont = document.getElementById('list-gare');
   const rm = {};
-  c.querySelectorAll('input[data-key]').forEach(i => {
+  cont.querySelectorAll('input[data-key]').forEach(i => {
     const k = i.dataset.key;
-    if (!rm[k]) rm[k] = { casa: k.split('|')[0], ospite: k.split('|')[1], legCasa: 0, legOspite: 0 };
+    if (!rm[k]) rm[k] = { giocatore: i.dataset.c, avversario: i.dataset.o, legVinti: 0, legPersi: 0 };
     const v = parseInt(i.value) || 0;
-    if (i.dataset.side === 'casa') rm[k].legCasa = v; else rm[k].legOspite = v;
+    if (i.dataset.side === 'vinti') rm[k].legVinti = v; else rm[k].legPersi = v;
   });
   setLoad(true);
-  const r = await api('salvaGaraSquadra', { id: garaId || null, squadraOspite: garaSetup.ospite, giocatoriCasa: garaSetup.c, datiPartita: { setup: garaSetup, rounds: Object.values(rm) } });
+  try {
+    let gRef;
+    if (garaId) {
+      gRef = doc(db, 'gareSquadre', garaId);
+      await updateDoc(gRef, { squadraOspite: garaSetup.ospite, giocatoriCasa: garaSetup.c, setup: garaSetup });
+      // Elimina rounds esistenti
+      const rSnap = await getDocs(collection(db, 'gareSquadre', garaId, 'rounds'));
+      await Promise.all(rSnap.docs.map(r => deleteDoc(r.ref)));
+    } else {
+      gRef = await addDoc(collection(db, 'gareSquadre'), {
+        squadraOspite: garaSetup.ospite,
+        giocatoriCasa: garaSetup.c,
+        setup: garaSetup,
+        data: serverTimestamp()
+      });
+    }
+    // Salva rounds
+    const garaDocId = garaId || gRef.id;
+    await Promise.all(Object.values(rm).map(r =>
+      addDoc(collection(db, 'gareSquadre', garaDocId, 'rounds'), r)
+    ));
+    toast('Gara salvata', 'success');
+    garaId = null; garaSetup = null;
+    await loadGare();
+    renderHome();
+  } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
-  if (r && r.ok) { toast(r.msg, 'success'); garaId = null; garaSetup = null; await loadGare(); renderHome(); }
-  else if (r) toast(r.msg, 'error');
-}
+};
 
-// ═══════════════════════════════════════════
-// HOME
-// ═══════════════════════════════════════════
+// ── HOME ─────────────────────────────────────────
 function renderHome() {
   document.getElementById('s-g').textContent  = giocatori.length;
   document.getElementById('s-p').textContent  = singoli.length;
   document.getElementById('s-sq').textContent = gareSquadre.length;
-  document.getElementById('s-l').textContent  = singoli.reduce((a, s) => a + (+s.legCasa), 0);
+  document.getElementById('s-l').textContent  = singoli.reduce((a, s) => a + (s.legVinti || 0), 0);
 
+  // Classifica
   const lm = {};
   giocatori.forEach(g => lm[g.nome] = 0);
-  singoli.forEach(s => { if (lm[s.giocatoreCasa] !== undefined) lm[s.giocatoreCasa] += (+s.legCasa); });
+  singoli.forEach(s => { if (lm[s.giocatore] !== undefined) lm[s.giocatore] += (s.legVinti || 0); });
   gareSquadre.forEach(g => {
-    const rr = (g.datiPartita || {}).rounds || [];
-    (g.giocatoriCasa || []).forEach(nome => { rr.forEach(r => { if (r.casa && r.casa.includes(nome) && lm[nome] !== undefined) lm[nome] += (+r.legCasa || 0); }); });
+    (g.rounds || []).forEach(r => {
+      if (lm[r.giocatore] !== undefined) lm[r.giocatore] += (r.legVinti || 0);
+    });
   });
-
   const sorted = Object.entries(lm).sort((a, b) => b[1] - a[1]);
   document.getElementById('home-rank').innerHTML = !sorted.length || sorted.every(e => e[1] === 0)
     ? '<div class="empty"><div class="empty-icon">🎯</div>Nessuna partita</div>'
     : sorted.map(([n, l], i) => `<div class="row"><div class="row-l"><span class="fw7">${n}</span></div><div class="row-r"><span class="badge ${i===0?'bg-gold':i===1?'bg-blue':'bg-green'}">${l} leg</span></div></div>`).join('');
 
+  // Ultime partite
   const ul = [...singoli].reverse().slice(0, 6);
   document.getElementById('home-last').innerHTML = !ul.length
     ? '<div class="empty"><div class="empty-icon">📋</div>Nessuna partita</div>'
-    : ul.map(s => { const lC = +s.legCasa, lO = +s.legOspite; return `<div class="row"><div class="row-l"><span class="fw7 text-sm">${s.giocatoreCasa}</span><span class="text-xs text-muted">vs ${s.giocatoreOspite}</span></div><div class="row-r"><span style="font-family:'Bebas Neue';font-size:22px"><span class="${lC>lO?'text-green':'text-red'}">${lC}</span><span class="text-muted">–</span><span class="${lO>lC?'text-green':'text-red'}">${lO}</span></span></div></div>`; }).join('');
+    : ul.map(s => {
+        const lV = s.legVinti || 0, lP = s.legPersi || 0;
+        return `<div class="row">
+          <div class="row-l"><span class="fw7 text-sm">${s.giocatore}</span><span class="text-xs text-muted">vs ${s.avversario}</span></div>
+          <div class="row-r"><span style="font-family:'Bebas Neue';font-size:22px"><span class="${lV>lP?'text-green':'text-red'}">${lV}</span><span class="text-muted">–</span><span class="${lP>lV?'text-green':'text-red'}">${lP}</span></span></div>
+        </div>`;
+      }).join('');
 
+  // Gare squadre
   document.getElementById('home-teams').innerHTML = !gareSquadre.length
     ? '<div class="empty"><div class="empty-icon">🏅</div>Nessuna gara</div>'
-    : [...gareSquadre].reverse().map(g => { const rr = (g.datiPartita||{}).rounds||[]; const lC = rr.reduce((a,r)=>a+(+r.legCasa||0),0); const lO = rr.reduce((a,r)=>a+(+r.legOspite||0),0); const dt = new Date(g.data); const df = isNaN(dt)?g.data:dt.toLocaleDateString('it-IT'); const bc = lC>lO?'bg-green':lC<lO?'bg-red':'bg-gold'; const bt = lC>lO?'VITTORIA':lC<lO?'SCONFITTA':'PAREGGIO'; return `<div class="row"><div class="row-l"><span class="fw7 text-sm">vs ${g.squadraOspite}</span><span class="text-xs text-muted">${df}</span></div><div class="row-r"><span style="font-family:'Bebas Neue';font-size:20px">${lC}–${lO}</span><span class="badge ${bc}">${bt}</span></div></div>`; }).join('');
+    : [...gareSquadre].reverse().map(g => {
+        const rr = g.rounds || [];
+        const lV = rr.reduce((a, r) => a + (r.legVinti || 0), 0);
+        const lP = rr.reduce((a, r) => a + (r.legPersi || 0), 0);
+        const data = g.data?.toDate ? g.data.toDate().toLocaleDateString('it-IT') : '–';
+        const bc = lV > lP ? 'bg-green' : lV < lP ? 'bg-red' : 'bg-gold';
+        const bt = lV > lP ? 'VITTORIA' : lV < lP ? 'SCONFITTA' : 'PAREGGIO';
+        return `<div class="row">
+          <div class="row-l"><span class="fw7 text-sm">vs ${g.squadraOspite}</span><span class="text-xs text-muted">${data}</span></div>
+          <div class="row-r"><span style="font-family:'Bebas Neue';font-size:20px">${lV}–${lP}</span><span class="badge ${bc}">${bt}</span></div>
+        </div>`;
+      }).join('');
 }
 
-// ═══════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════
+// ── UTILS ────────────────────────────────────────
 function fillSelects() {
-  ['sx-casa','gs-c1','gs-c2','gs-c3','gs-c4'].forEach(id => {
+  ['sx-giocatore','gs-c1','gs-c2','gs-c3','gs-c4'].forEach(id => {
     const el = document.getElementById(id); if (!el) return;
     const cur = el.value;
-    el.innerHTML = '<option value="">— seleziona —</option>' + giocatori.map(g => `<option value="${g.nome}"${g.nome===cur?' selected':''}>${g.nome}</option>`).join('');
+    el.innerHTML = '<option value="">— seleziona —</option>' +
+      giocatori.map(g => `<option value="${g.nome}"${g.nome===cur?' selected':''}>${g.nome}</option>`).join('');
   });
 }
 
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function setLoad(s)  { document.getElementById('loading').classList.toggle('show', s); }
+window.closeModal = (id) => document.getElementById(id).classList.remove('open');
+window.adjLeg = (elId, d) => {
+  const el = document.getElementById(elId);
+  let v = parseInt(el.textContent) + d;
+  if (v < 0) v = 0; if (v > 2) v = 2;
+  el.textContent = v;
+};
+
+function setLoad(s) { document.getElementById('loading').classList.toggle('show', s); }
 
 let tt;
-function toast(msg, type = 'info') {
+window.toast = (msg, type = 'info') => {
   const el = document.getElementById('toast');
   el.textContent = msg; el.className = 'show ' + type;
   clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 3000);
-}
+};
 
-document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+document.querySelectorAll('.modal-overlay').forEach(o =>
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
+);
 </script>
 </body>
 </html>
