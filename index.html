@@ -1179,72 +1179,87 @@ window.vediRisultati = (id) => {
   if (!g) return;
   const setup = g.setup || { ospite: g.squadraOspite, c: g.giocatoriCasa || [], o: ['O1','O2','O3','O4'] };
   const rounds = g.rounds || [];
-  const exist = {};
-  rounds.forEach(r => exist[r.giocatore + '|' + r.avversario] = r);
 
-  const roundsDef = [
-    {n:1, label:'1° Round Singoli', tipo:'singolo', pts:[
-      {c:setup.c[0],o:setup.o[0]},{c:setup.c[1],o:setup.o[1]},{c:setup.c[2],o:setup.o[2]},{c:setup.c[3],o:setup.o[3]}
-    ]},
-    {n:2, label:'2° Round Singoli', tipo:'singolo', pts:[
-      {c:setup.c[1],o:setup.o[0]},{c:setup.c[0],o:setup.o[1]},{c:setup.c[3],o:setup.o[2]},{c:setup.c[2],o:setup.o[3]}
-    ]},
-    {n:3, label:'3° Round Singoli', tipo:'singolo', pts:[
-      {c:setup.c[3],o:setup.o[1]},{c:setup.c[0],o:setup.o[2]},{c:setup.c[1],o:setup.o[3]},{c:setup.c[2],o:setup.o[0]}
-    ]},
-    {n:4, label:'4° Round Singoli', tipo:'singolo', pts:[
-      {c:setup.c[0],o:setup.o[3]},{c:setup.c[3],o:setup.o[0]},{c:setup.c[2],o:setup.o[1]},{c:setup.c[1],o:setup.o[2]}
-    ]},
-    {n:5, label:'Doppi 701 — 1° Leg', tipo:'doppio', pts:[
-      {c:setup.c[0]+'&'+setup.c[1],o:setup.o[0]+'&'+setup.o[1]},{c:setup.c[2]+'&'+setup.c[3],o:setup.o[2]+'&'+setup.o[3]}
-    ]},
-    {n:6, label:'Doppi 701 — 2° Leg', tipo:'doppio', pts:[
-      {c:setup.c[0]+'&'+setup.c[3],o:setup.o[0]+'&'+setup.o[3]},{c:setup.c[1]+'&'+setup.c[2],o:setup.o[1]+'&'+setup.o[2]}
-    ]},
-    {n:7, label:'Doppi 701 — 3° Leg Spareggio ⚡', tipo:'doppio_spareggio', pts:[
-      {c:setup.c[0]+'&'+setup.c[1],o:setup.o[0]+'&'+setup.o[1]},{c:setup.c[2]+'&'+setup.c[3],o:setup.o[2]+'&'+setup.o[3]}
-    ]},
+  // Mappa per singoli (chiave giocatore|avversario) e doppi (chiave doppio1/2/3)
+  const exist = {};
+  rounds.forEach(r => {
+    exist[r.giocatore + '|' + r.avversario] = r;
+    if (r.giocatore && r.giocatore.startsWith('doppio')) exist[r.giocatore] = r;
+  });
+
+  const singDef = [
+    {n:1, label:'1° Round Singoli', pts:[{c:setup.c[0],o:setup.o[0]},{c:setup.c[1],o:setup.o[1]},{c:setup.c[2],o:setup.o[2]},{c:setup.c[3],o:setup.o[3]}]},
+    {n:2, label:'2° Round Singoli', pts:[{c:setup.c[1],o:setup.o[0]},{c:setup.c[0],o:setup.o[1]},{c:setup.c[3],o:setup.o[2]},{c:setup.c[2],o:setup.o[3]}]},
+    {n:3, label:'3° Round Singoli', pts:[{c:setup.c[3],o:setup.o[1]},{c:setup.c[0],o:setup.o[2]},{c:setup.c[1],o:setup.o[3]},{c:setup.c[2],o:setup.o[0]}]},
+    {n:4, label:'4° Round Singoli', pts:[{c:setup.c[0],o:setup.o[3]},{c:setup.c[3],o:setup.o[0]},{c:setup.c[2],o:setup.o[1]},{c:setup.c[1],o:setup.o[2]}]},
+  ];
+  const doppDef = [
+    {n:5, label:'Doppi 701 — 1° Leg', tipo:'doppio',    dkey:'doppio1'},
+    {n:6, label:'Doppi 701 — 2° Leg', tipo:'doppio',    dkey:'doppio2'},
+    {n:7, label:'Doppi 701 — 3° Leg Spareggio ⚡',  tipo:'doppio_spareggio', dkey:'doppio3'},
   ];
 
-  let html = `<div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:#1B3A6B;margin-bottom:4px">VS ${setup.ospite.toUpperCase()}</div>
-    <div style="font-size:11px;color:#7a86a0;margin-bottom:16px">${setup.c.join(', ')} · vs · ${setup.o.join(', ')}</div>`;
+  let html = '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:#1B3A6B;margin-bottom:4px">VS ' + setup.ospite.toUpperCase() + '</div>'
+           + '<div style="font-size:11px;color:#7a86a0;margin-bottom:16px">' + setup.c.join(', ') + ' · vs · ' + setup.o.join(', ') + '</div>';
 
-  roundsDef.forEach(round => {
-    const isDoppio = round.tipo === 'doppio';
-    const isSpareg = round.tipo === 'doppio_spareggio';
-    const bgColor  = isSpareg ? '#fff3cd' : isDoppio ? '#f0f4ff' : '#f0f2f5';
-    const rnBg     = isSpareg ? 'background:#f0c040;color:#0a0d14' : isDoppio ? 'background:#1B3A6B' : '';
-    html += `<div class="round-head"><span class="round-num" style="${rnBg}">${round.n}</span><span class="round-label">${round.label}</span></div>`;
+  // Singoli
+  singDef.forEach(round => {
+    html += '<div class="round-head"><span class="round-num">' + round.n + '</span><span class="round-label">' + round.label + '</span></div>';
     round.pts.forEach(p => {
-      const key   = p.c + '|' + p.o;
-      const ev    = exist[key] || {};
+      const ev    = exist[p.c+'|'+p.o] || {};
       const lV    = ev.legVinti !== undefined ? ev.legVinti : '–';
       const lP    = ev.legPersi !== undefined ? ev.legPersi : '–';
-      const vince = ev.legVinti > ev.legPersi;
-      const perso = ev.legPersi > ev.legVinti;
-      html += `<div style="background:${bgColor};border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px">
-        <span style="flex:1;font-weight:600;font-size:13px">${p.c}</span>
-        <span style="font-family:'Bebas Neue';font-size:26px;letter-spacing:2px">
-          <span style="color:${vince?'#1a9e4a':'#CC1F1F'}">${lV}</span>
-          <span style="color:#7a86a0;font-size:18px"> – </span>
-          <span style="color:${perso?'#1a9e4a':'#CC1F1F'}">${lP}</span>
-        </span>
-        <span style="flex:1;font-weight:600;font-size:13px;text-align:right">${p.o}</span>
-      </div>`;
+      const cV    = lV > lP ? '#1a9e4a' : '#CC1F1F';
+      const cP    = lP > lV ? '#1a9e4a' : '#CC1F1F';
+      html += '<div style="background:#f0f2f5;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px">'
+            + '<span style="flex:1;font-weight:600;font-size:13px">' + p.c + '</span>'
+            + '<span style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:2px">'
+            + '<span style="color:' + cV + '">' + lV + '</span>'
+            + '<span style="color:#7a86a0;font-size:18px"> – </span>'
+            + '<span style="color:' + cP + '">' + lP + '</span>'
+            + '</span>'
+            + '<span style="flex:1;font-weight:600;font-size:13px;text-align:right">' + p.o + '</span>'
+            + '</div>';
     });
+  });
+
+  // Doppi
+  doppDef.forEach(round => {
+    const isSpareg = round.tipo === 'doppio_spareggio';
+    const bg       = isSpareg ? '#fff3cd' : '#f0f4ff';
+    const rnBg     = isSpareg ? 'background:#f0c040;color:#0a0d14' : 'background:#1B3A6B;color:#fff';
+    const ev       = exist[round.dkey] || {};
+    if (!ev.giocatore && round.tipo === 'doppio_spareggio') return; // spareggio non compilato: salta
+    const nome  = ev.giocatore  && !ev.giocatore.startsWith('doppio') ? ev.giocatore  : (ev.c1 && ev.c2 ? ev.c1+'&'+ev.c2 : '–');
+    const avv   = ev.avversario && !ev.avversario.startsWith('doppio') ? ev.avversario : (ev.o1 && ev.o2 ? ev.o1+'&'+ev.o2 : '–');
+    const lV    = ev.legVinti !== undefined ? ev.legVinti : '–';
+    const lP    = ev.legPersi !== undefined ? ev.legPersi : '–';
+    const cV    = lV > lP ? '#1a9e4a' : '#CC1F1F';
+    const cP    = lP > lV ? '#1a9e4a' : '#CC1F1F';
+    html += '<div class="round-head"><span class="round-num" style="' + rnBg + '">' + round.n + '</span><span class="round-label">' + round.label + '</span></div>'
+          + '<div style="background:' + bg + ';border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px">'
+          + '<span style="flex:1;font-weight:600;font-size:13px">' + nome + '</span>'
+          + '<span style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:2px">'
+          + '<span style="color:' + cV + '">' + lV + '</span>'
+          + '<span style="color:#7a86a0;font-size:18px"> – </span>'
+          + '<span style="color:' + cP + '">' + lP + '</span>'
+          + '</span>'
+          + '<span style="flex:1;font-weight:600;font-size:13px;text-align:right">' + avv + '</span>'
+          + '</div>';
   });
 
   // Totale
   const lVTot = rounds.reduce((a,r) => a+(r.legVinti||0), 0);
   const lPTot = rounds.reduce((a,r) => a+(r.legPersi||0), 0);
-  html += `<div style="border-top:2px solid #d0d5e0;margin-top:10px;padding-top:12px;display:flex;justify-content:space-between;align-items:center">
-    <span style="font-weight:700;color:#3a4460">TOTALE LEG</span>
-    <span style="font-family:'Bebas Neue';font-size:30px;letter-spacing:3px">
-      <span style="color:${lVTot>lPTot?'#1a9e4a':'#CC1F1F'}">${lVTot}</span>
-      <span style="color:#7a86a0"> – </span>
-      <span style="color:${lPTot>lVTot?'#1a9e4a':'#CC1F1F'}">${lPTot}</span>
-    </span>
-  </div>`;
+  const cVT   = lVTot>lPTot ? '#1a9e4a' : '#CC1F1F';
+  const cPT   = lPTot>lVTot ? '#1a9e4a' : '#CC1F1F';
+  html += '<div style="border-top:2px solid #d0d5e0;margin-top:10px;padding-top:12px;display:flex;justify-content:space-between;align-items:center">'
+        + '<span style="font-weight:700;color:#3a4460">TOTALE LEG</span>'
+        + '<span style="font-family:Bebas Neue,sans-serif;font-size:30px;letter-spacing:3px">'
+        + '<span style="color:' + cVT + '">' + lVTot + '</span>'
+        + '<span style="color:#7a86a0"> – </span>'
+        + '<span style="color:' + cPT + '">' + lPTot + '</span>'
+        + '</span></div>';
 
   document.getElementById('risultati-body').innerHTML = html;
   document.getElementById('modal-risultati').classList.add('open');
@@ -1278,9 +1293,12 @@ function renderGaraForm(garaEx, setup) {
   const exist = {};
   if (garaEx) {
     (garaEx.rounds || []).forEach(r => {
-      // Salva sia per chiave giocatore|avversario (singoli) che per dkey (doppi)
+      // Singoli: chiave giocatore|avversario
       exist[r.giocatore+'|'+r.avversario] = r;
+      // Doppi: chiave doppio1/2/3 (salvata come campo giocatore)
       if (r.giocatore && r.giocatore.startsWith('doppio')) exist[r.giocatore] = r;
+      // Doppi salvati con chiave esplicita
+      if (r.dkey) exist[r.dkey] = r;
     });
   }
 
@@ -1312,12 +1330,14 @@ function renderGaraForm(garaEx, setup) {
       var legN = round.pts[0].legN;
       var dkey = 'doppio' + legN;
       var ev   = exist[dkey] || {};
-      var dC1  = ev.c1 || '';
-      var dC2  = ev.c2 || '';
-      var dO1  = ev.o1 || '';
-      var dO2  = ev.o2 || '';
-      var lV   = ev.legVinti !== undefined ? ev.legVinti : '';
-      var lP   = ev.legPersi !== undefined ? ev.legPersi : '';
+      // Cerca prima per dkey diretto, poi per chiave giocatore
+      var evD  = exist[dkey] || exist['doppio'+legN] || {};
+      var dC1  = evD.c1 || '';
+      var dC2  = evD.c2 || '';
+      var dO1  = evD.o1 || '';
+      var dO2  = evD.o2 || '';
+      var lV   = evD.legVinti !== undefined ? evD.legVinti : '';
+      var lP   = evD.legPersi !== undefined ? evD.legPersi : '';
       var selC1 = optsC.replace('value="' + dC1 + '"', 'value="' + dC1 + '" selected');
       var selC2 = optsC.replace('value="' + dC2 + '"', 'value="' + dC2 + '" selected');
 
@@ -1418,15 +1438,15 @@ window.salvaGaraForm = async () => {
       const el = cont.querySelector('[data-dkey="'+dkey+'"][data-dtype="'+dtype+'"]');
       return el ? (el.value || '') : '';
     };
-    const c1    = get('c1');
-    const c2    = get('c2');
-    const o1    = get('o1');
-    const o2    = get('o2');
-    const lV    = parseInt(get('vinti')) || 0;
-    const lP    = parseInt(get('persi')) || 0;
-    const nome  = (c1 && c2) ? c1+'&'+c2 : (c1||c2||dkey);
-    const avv   = (o1 && o2) ? o1+'&'+o2 : (o1||o2||dkey);
-    rm[dkey] = { giocatore: nome, avversario: avv, legVinti: lV, legPersi: lP, c1, c2, o1, o2 };
+    const c1  = get('c1');
+    const c2  = get('c2');
+    const o1  = get('o1');
+    const o2  = get('o2');
+    const lV  = parseInt(get('vinti')) || 0;
+    const lP  = parseInt(get('persi')) || 0;
+    // giocatore = dkey (es. 'doppio1') per identificarlo al reload
+    // c1,c2,o1,o2 salvati separatamente per ricostruire i nomi
+    rm[dkey] = { giocatore: dkey, avversario: dkey, dkey: dkey, c1, c2, o1, o2, legVinti: lV, legPersi: lP };
   });
   setLoad(true);
   try {
