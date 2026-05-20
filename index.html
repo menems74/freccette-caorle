@@ -412,13 +412,13 @@ select option { background:#fff; color:var(--text); }
 <body>
 
 <!-- HEADER MOBILE (nascosto su desktop) -->
-<div class="header" id="mob-header">
+<div class="header" id="mob-header" style="z-index:50;position:relative">
   <img src="glintelligenti_NEW_LOGO.png" alt="Logo" style="width:44px;height:44px;object-fit:contain;border-radius:6px;flex-shrink:0">
   <div style="flex:1">
     <div class="header-title">Glintelligenti</div>
     <div class="header-sub">Campionato Nazionale 2026</div>
   </div>
-  <button id="lock-btn" onclick="toggleLock()" style="background:none;border:none;cursor:pointer;font-size:26px;padding:4px 8px;line-height:1;-webkit-tap-highlight-color:transparent" title="Sblocca modifica">🔒</button>
+  <button id="lock-btn" onclick="toggleLock()" style="background:none;border:none;cursor:pointer;font-size:26px;padding:4px 8px;line-height:1;-webkit-tap-highlight-color:transparent;position:relative;z-index:60;min-width:44px;min-height:44px" title="Sblocca modifica">🔒</button>
 </div>
 
 <!-- APP SHELL: sidebar + contenuto -->
@@ -525,6 +525,18 @@ select option { background:#fff; color:var(--text); }
 </div><!-- /main-content -->
 </div><!-- /app-shell -->
 
+<!-- MODAL RISULTATI (sola lettura) -->
+<div class="modal-overlay" id="modal-risultati">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">RISULTATI GARA</div>
+    <div id="risultati-body"></div>
+    <div style="margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal('modal-risultati')">✕ Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL GIOCATORE -->
 <div class="modal-overlay" id="modal-g">
   <div class="modal-sheet">
@@ -626,6 +638,18 @@ select option { background:#fff; color:var(--text); }
   </div>
 </div>
 
+<!-- MODAL RISULTATI (sola lettura) -->
+<div class="modal-overlay" id="modal-risultati">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">RISULTATI GARA</div>
+    <div id="risultati-body"></div>
+    <div style="margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal('modal-risultati')">✕ Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL GIOCATORE -->
 <div class="modal-overlay" id="modal-g">
   <div class="modal-sheet">
@@ -707,31 +731,6 @@ select option { background:#fff; color:var(--text); }
 <div class="loading-overlay" id="loading"><div class="spinner"></div></div>
 
 <!-- MODAL PIN -->
-<div id="pin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:300px;box-shadow:0 8px 40px rgba(0,0,0,.3)">
-    <div style="text-align:center;margin-bottom:6px">
-      <div style="font-size:36px" id="pin-icon">🔒</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#1B3A6B;margin-top:4px" id="pin-title">INSERISCI PIN</div>
-      <div style="font-size:13px;color:#7a86a0;margin-top:4px" id="pin-subtitle">Inserisci il codice per sbloccare la modifica</div>
-    </div>
-    <!-- Display PIN -->
-    <div style="display:flex;justify-content:center;gap:10px;margin:20px 0 16px">
-      <div id="pin-d1" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
-      <div id="pin-d2" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
-      <div id="pin-d3" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
-      <div id="pin-d4" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
-    </div>
-    <!-- Tastierino -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k => `
-      <button onclick="pinKey('${k}')" style="height:56px;border-radius:12px;border:2px solid #d0d5e0;background:${k===''?'transparent':'#f0f2f5'};font-size:${k==='⌫'?'20px':'22px'};font-weight:700;color:#1B3A6B;cursor:${k===''?'default':'pointer'};transition:all .1s;pointer-events:${k===''?'none':'auto'}"
-        onmousedown="this.style.background='#dce8f8'" onmouseup="this.style.background='#f0f2f5'" ontouchstart="this.style.background='#dce8f8'" ontouchend="this.style.background='#f0f2f5'"
-      >${k}</button>`).join('')}
-    </div>
-    <button onclick="closePinModal()" style="width:100%;margin-top:14px;padding:12px;border-radius:10px;border:2px solid #d0d5e0;background:none;color:#7a86a0;font-size:14px;font-weight:600;cursor:pointer">Annulla</button>
-  </div>
-</div>
-
 <!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1062,8 +1061,11 @@ function renderGare() {
         </div>
       </div>
       <div class="text-xs text-muted" style="margin-bottom:10px">${(g.giocatoriCasa||[]).join(', ')}</div>
-      <div class="item-actions gara-actions">
-        <button class="btn btn-ghost btn-sm" onclick="openGara('${g.id}')">✏️ Risultati</button>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="vediRisultati('${g.id}')">👁 Vedi risultati</button>
+      </div>
+      <div class="item-actions gara-actions" style="margin-top:8px">
+        <button class="btn btn-ghost btn-sm" onclick="openGara('${g.id}')">✏️ Modifica</button>
         <button class="btn btn-ghost btn-sm" onclick="openSetupGara('${g.id}')">👥 Avversari</button>
         <button class="btn btn-danger btn-sm" onclick="elimGara('${g.id}')">🗑</button>
       </div>
@@ -1170,6 +1172,63 @@ window.elimGara = async (id) => {
     renderHome();
   } catch(e) { toast('Errore: ' + e.message, 'error'); }
   setLoad(false);
+};
+
+window.vediRisultati = (id) => {
+  const g = gareSquadre.find(x => x.id === id);
+  if (!g) return;
+  const setup = g.setup || { ospite: g.squadraOspite, c: g.giocatoriCasa || [], o: ['O1','O2','O3','O4'] };
+  const rounds = g.rounds || [];
+  const exist = {};
+  rounds.forEach(r => exist[r.giocatore + '|' + r.avversario] = r);
+
+  const roundsDef = [
+    {n:1, label:'1° Round Singoli',   pts:[{c:setup.c[0],o:setup.o[0]},{c:setup.c[1],o:setup.o[1]},{c:setup.c[2],o:setup.o[2]},{c:setup.c[3],o:setup.o[3]}]},
+    {n:2, label:'2° Round Singoli',   pts:[{c:setup.c[1],o:setup.o[0]},{c:setup.c[0],o:setup.o[1]},{c:setup.c[3],o:setup.o[2]},{c:setup.c[2],o:setup.o[3]}]},
+    {n:3, label:'1° Round Doppi 701', pts:[{c:setup.c[0]+'&'+setup.c[1],o:setup.o[0]+'&'+setup.o[1]},{c:setup.c[2]+'&'+setup.c[3],o:setup.o[2]+'&'+setup.o[3]}]},
+    {n:4, label:'3° Round Singoli',   pts:[{c:setup.c[3],o:setup.o[1]},{c:setup.c[0],o:setup.o[2]},{c:setup.c[1],o:setup.o[3]},{c:setup.c[2],o:setup.o[0]}]},
+    {n:5, label:'4° Round Singoli',   pts:[{c:setup.c[0],o:setup.o[3]},{c:setup.c[3],o:setup.o[0]},{c:setup.c[2],o:setup.o[1]},{c:setup.c[1],o:setup.o[2]}]},
+    {n:6, label:'2° Round Doppi 701', pts:[{c:setup.c[0]+'&'+setup.c[3],o:setup.o[0]+'&'+setup.o[3]},{c:setup.c[1]+'&'+setup.c[2],o:setup.o[1]+'&'+setup.o[2]}]},
+  ];
+
+  let html = `<div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:#1B3A6B;margin-bottom:4px">VS ${setup.ospite.toUpperCase()}</div>
+    <div style="font-size:11px;color:#7a86a0;margin-bottom:16px">${setup.c.join(', ')} · vs · ${setup.o.join(', ')}</div>`;
+
+  roundsDef.forEach(round => {
+    html += `<div class="round-head"><span class="round-num">${round.n}</span><span class="round-label">${round.label}</span></div>`;
+    round.pts.forEach(p => {
+      const key = p.c + '|' + p.o;
+      const ev  = exist[key] || {};
+      const lV  = ev.legVinti !== undefined ? ev.legVinti : '–';
+      const lP  = ev.legPersi !== undefined ? ev.legPersi : '–';
+      const vince = ev.legVinti > ev.legPersi;
+      const perso = ev.legPersi > ev.legVinti;
+      html += `<div style="background:#f0f2f5;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+        <span style="flex:1;font-weight:600;font-size:13px">${p.c}</span>
+        <span style="font-family:'Bebas Neue';font-size:26px;letter-spacing:2px">
+          <span style="color:${vince?'#1a9e4a':'#CC1F1F'}">${lV}</span>
+          <span style="color:#7a86a0;font-size:18px"> – </span>
+          <span style="color:${perso?'#1a9e4a':'#CC1F1F'}">${lP}</span>
+        </span>
+        <span style="flex:1;font-weight:600;font-size:13px;text-align:right">${p.o}</span>
+      </div>`;
+    });
+  });
+
+  // Totale
+  const lVTot = rounds.reduce((a,r) => a+(r.legVinti||0), 0);
+  const lPTot = rounds.reduce((a,r) => a+(r.legPersi||0), 0);
+  html += `<div style="border-top:2px solid #d0d5e0;margin-top:10px;padding-top:12px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-weight:700;color:#3a4460">TOTALE LEG</span>
+    <span style="font-family:'Bebas Neue';font-size:30px;letter-spacing:3px">
+      <span style="color:${lVTot>lPTot?'#1a9e4a':'#CC1F1F'}">${lVTot}</span>
+      <span style="color:#7a86a0"> – </span>
+      <span style="color:${lPTot>lVTot?'#1a9e4a':'#CC1F1F'}">${lPTot}</span>
+    </span>
+  </div>`;
+
+  document.getElementById('risultati-body').innerHTML = html;
+  document.getElementById('modal-risultati').classList.add('open');
 };
 
 function renderGaraForm(garaEx, setup) {
