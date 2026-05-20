@@ -1206,7 +1206,7 @@ window.vediRisultati = (id) => {
     ]},
   ];
 
-  let html = `<div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:#1B3A6B;margin-bottom:4px">VS ${setup.ospite.toUpperCase()}</div>
+  let html = `<div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:#1B3A6B;margin-bottom:4px">VS ${setup.ospite.toUpperCase()}</div>
     <div style="font-size:11px;color:#7a86a0;margin-bottom:16px">${setup.c.join(', ')} · vs · ${setup.o.join(', ')}</div>`;
 
   roundsDef.forEach(round => {
@@ -1278,30 +1278,31 @@ function renderGaraForm(garaEx, setup) {
   const exist = {};
   if (garaEx) { (garaEx.rounds || []).forEach(r => exist[r.giocatore+'|'+r.avversario] = r); }
 
-  let html = `<div class="item">
-    <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:var(--accent2);margin-bottom:4px">VS ${setup.ospite.toUpperCase()}</div>
-    <div class="text-xs text-muted" style="margin-bottom:14px">${c.join(', ')} · vs · ${o.join(', ')}</div>`;
+  let html = '<div class="item">'
+           + '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:#1B3A6B;margin-bottom:4px">VS ' + setup.ospite.toUpperCase() + '</div>'
+           + '<div class="text-xs text-muted" style="margin-bottom:14px">' + c.join(', ') + ' · vs · ' + o.join(', ') + '</div>';
 
-  rounds.forEach(round => {
-    const isDoppio   = round.tipo === 'doppio';
-    const isSpareg   = round.tipo === 'doppio_spareggio';
-    const maxVal     = (isDoppio || isSpareg) ? 1 : 2;
-    const bgColor    = isSpareg ? '#fff3cd' : isDoppio ? '#f0f4ff' : '#f0f2f5';
-    const borderLeft = isSpareg ? '3px solid #f0c040' : isDoppio ? '3px solid #1B3A6B' : '3px solid #d0d5e0';
-    const nota       = isSpareg ? ' <span style="font-size:10px;color:#8a6200;font-weight:700">Solo se 1° e 2° leg in parità</span>' : isDoppio ? ' <span style="font-size:10px;color:#1B3A6B">Risultato 1–0</span>' : '';
-    const rnStyle    = isSpareg ? 'background:#f0c040;color:#0a0d14' : isDoppio ? 'background:#1B3A6B' : '';
-    const rhStyle    = isSpareg ? 'border-bottom-color:#f0c040' : isDoppio ? 'border-bottom-color:#1B3A6B' : '';
+  rounds.forEach(function(round) {
+    var isDoppio   = round.tipo === 'doppio';
+    var isSpareg   = round.tipo === 'doppio_spareggio';
+    var maxVal     = (isDoppio || isSpareg) ? 1 : 2;
+    var bgColor    = isSpareg ? '#fff3cd' : isDoppio ? '#f0f4ff' : '#f0f2f5';
+    var borderLeft = isSpareg ? '3px solid #f0c040' : isDoppio ? '3px solid #1B3A6B' : '3px solid #d0d5e0';
+    var nota       = isSpareg ? ' <span style="font-size:10px;color:#8a6200;font-weight:700">Solo se 1° e 2° leg in parità</span>'
+                  : isDoppio  ? ' <span style="font-size:10px;color:#1B3A6B">Risultato 1–0</span>' : '';
+    var rnStyle    = isSpareg ? 'background:#f0c040;color:#0a0d14' : isDoppio ? 'background:#1B3A6B;color:#fff' : '';
+    var rhStyle    = isSpareg ? 'border-bottom-color:#f0c040' : isDoppio ? 'border-bottom-color:#1B3A6B' : '';
 
     html += '<div class="round-head" style="' + rhStyle + '">'
           + '<span class="round-num" style="' + rnStyle + '">' + round.n + '</span>'
           + '<span class="round-label">' + round.label + nota + '</span>'
           + '</div>';
 
-    round.pts.forEach(p => {
-      const key = p.c+'|'+p.o;
-      const ev  = exist[key] || {};
-      const lV  = ev.legVinti !== undefined ? ev.legVinti : '';
-      const lP  = ev.legPersi !== undefined ? ev.legPersi : '';
+    round.pts.forEach(function(p) {
+      var key = p.c+'|'+p.o;
+      var ev  = exist[key] || {};
+      var lV  = ev.legVinti !== undefined ? ev.legVinti : '';
+      var lP  = ev.legPersi !== undefined ? ev.legPersi : '';
       html += '<div class="match-input" style="background:' + bgColor + ';border-left:' + borderLeft + '">'
             + '<div class="match-input-names">'
             + '<span class="match-input-name">' + p.c + '</span>'
@@ -1317,23 +1318,22 @@ function renderGaraForm(garaEx, setup) {
     });
   });
 
-  html += `<div class="divider"></div>
-    <div class="flex items-center justify-between" style="margin-bottom:16px">
-      <span class="fw7 text-muted">TOTALE LEG</span>
-      <span id="gt-score" style="font-family:'Bebas Neue';font-size:30px;letter-spacing:3px">–</span>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="annullaGara()">✕ Annulla</button>
-      <button class="btn btn-primary" onclick="salvaGaraForm()">💾 Salva Gara</button>
-    </div>
-  </div>`;
+  html += '<div class="divider"></div>'
+        + '<div class="flex items-center justify-between" style="margin-bottom:16px">'
+        + '<span class="fw7 text-muted">TOTALE LEG</span>'
+        + '<span id="gt-score" style="font-family:Bebas Neue,sans-serif;font-size:30px;letter-spacing:3px">–</span>'
+        + '</div>'
+        + '<div class="btn-row">'
+        + '<button class="btn btn-ghost" onclick="annullaGara()">✕ Annulla</button>'
+        + '<button class="btn btn-primary" onclick="salvaGaraForm()">💾 Salva Gara</button>'
+        + '</div>'
+        + '</div>';
 
-  const cont = document.getElementById('list-gare');
+  var cont = document.getElementById('list-gare');
   cont.innerHTML = html;
-  cont.querySelectorAll('input[type=number]').forEach(i => i.addEventListener('input', updateTot));
+  cont.querySelectorAll('input[type=number]').forEach(function(i){ i.addEventListener('input', updateTot); });
   updateTot();
 }
-
 function updateTot() {
   const c = document.getElementById('list-gare');
   let tV = 0, tP = 0;
