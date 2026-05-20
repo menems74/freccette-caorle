@@ -1266,30 +1266,39 @@ function renderGaraForm(garaEx, setup) {
       {c:c[0],o:o[3]},{c:c[3],o:o[0]},{c:c[2],o:o[1]},{c:c[1],o:o[2]}
     ]},
     {n:5, label:'Doppi 701 — 1° Leg', tipo:'doppio', pts:[
-      {c:c[0]+'&'+c[1],o:o[0]+'&'+o[1]},{c:c[2]+'&'+c[3],o:o[2]+'&'+o[3]}
+      {c:'doppio1',o:'doppio1',doppio:true,legN:1}
     ]},
     {n:6, label:'Doppi 701 — 2° Leg', tipo:'doppio', pts:[
-      {c:c[0]+'&'+c[3],o:o[0]+'&'+o[3]},{c:c[1]+'&'+c[2],o:o[1]+'&'+o[2]}
+      {c:'doppio2',o:'doppio2',doppio:true,legN:2}
     ]},
     {n:7, label:'Doppi 701 — 3° Leg Spareggio ⚡', tipo:'doppio_spareggio', pts:[
-      {c:c[0]+'&'+c[1],o:o[0]+'&'+o[1]},{c:c[2]+'&'+c[3],o:o[2]+'&'+o[3]}
+      {c:'doppio3',o:'doppio3',doppio:true,legN:3}
     ]},
   ];
   const exist = {};
-  if (garaEx) { (garaEx.rounds || []).forEach(r => exist[r.giocatore+'|'+r.avversario] = r); }
+  if (garaEx) {
+    (garaEx.rounds || []).forEach(r => {
+      // Salva sia per chiave giocatore|avversario (singoli) che per dkey (doppi)
+      exist[r.giocatore+'|'+r.avversario] = r;
+      if (r.giocatore && r.giocatore.startsWith('doppio')) exist[r.giocatore] = r;
+    });
+  }
 
   let html = '<div class="item">'
            + '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:#1B3A6B;margin-bottom:4px">VS ' + setup.ospite.toUpperCase() + '</div>'
            + '<div class="text-xs text-muted" style="margin-bottom:14px">' + c.join(', ') + ' · vs · ' + o.join(', ') + '</div>';
 
+  // Prepara opzioni giocatori per select doppi
+  var optsC = '<option value="">-- seleziona --</option>';
+  c.forEach(function(nome){ optsC += '<option value="' + nome + '">' + nome + '</option>'; });
+
   rounds.forEach(function(round) {
-    var isDoppio   = round.tipo === 'doppio';
-    var isSpareg   = round.tipo === 'doppio_spareggio';
-    var maxVal     = (isDoppio || isSpareg) ? 1 : 2;
+    var isDoppio = round.tipo === 'doppio';
+    var isSpareg = round.tipo === 'doppio_spareggio';
     var bgColor    = isSpareg ? '#fff3cd' : isDoppio ? '#f0f4ff' : '#f0f2f5';
     var borderLeft = isSpareg ? '3px solid #f0c040' : isDoppio ? '3px solid #1B3A6B' : '3px solid #d0d5e0';
-    var nota       = isSpareg ? ' <span style="font-size:10px;color:#8a6200;font-weight:700">Solo se 1° e 2° leg in parità</span>'
-                  : isDoppio  ? ' <span style="font-size:10px;color:#1B3A6B">Risultato 1–0</span>' : '';
+    var nota       = isSpareg ? ' <span style="font-size:10px;color:#8a6200;font-weight:700">Solo se parità</span>'
+                  : isDoppio  ? ' <span style="font-size:10px;color:#1B3A6B">1 leg — vince chi fa 501</span>' : '';
     var rnStyle    = isSpareg ? 'background:#f0c040;color:#0a0d14' : isDoppio ? 'background:#1B3A6B;color:#fff' : '';
     var rhStyle    = isSpareg ? 'border-bottom-color:#f0c040' : isDoppio ? 'border-bottom-color:#1B3A6B' : '';
 
@@ -1298,24 +1307,60 @@ function renderGaraForm(garaEx, setup) {
           + '<span class="round-label">' + round.label + nota + '</span>'
           + '</div>';
 
-    round.pts.forEach(function(p) {
-      var key = p.c+'|'+p.o;
-      var ev  = exist[key] || {};
-      var lV  = ev.legVinti !== undefined ? ev.legVinti : '';
-      var lP  = ev.legPersi !== undefined ? ev.legPersi : '';
+    if (isDoppio || isSpareg) {
+      // Doppio: selezione libera delle coppie
+      var legN = round.pts[0].legN;
+      var dkey = 'doppio' + legN;
+      var ev   = exist[dkey] || {};
+      var dC1  = ev.c1 || '';
+      var dC2  = ev.c2 || '';
+      var dO1  = ev.o1 || '';
+      var dO2  = ev.o2 || '';
+      var lV   = ev.legVinti !== undefined ? ev.legVinti : '';
+      var lP   = ev.legPersi !== undefined ? ev.legPersi : '';
+      var selC1 = optsC.replace('value="' + dC1 + '"', 'value="' + dC1 + '" selected');
+      var selC2 = optsC.replace('value="' + dC2 + '"', 'value="' + dC2 + '" selected');
+
       html += '<div class="match-input" style="background:' + bgColor + ';border-left:' + borderLeft + '">'
-            + '<div class="match-input-names">'
-            + '<span class="match-input-name">' + p.c + '</span>'
-            + '<span class="match-input-vs">vs</span>'
-            + '<span class="match-input-name right">' + p.o + '</span>'
+            + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'
+            + '<div><label style="font-size:10px;font-weight:700;color:#3a4460;text-transform:uppercase;letter-spacing:1px">Nostro G1</label>'
+            + '<select data-dkey="' + dkey + '" data-dtype="c1" style="width:100%;background:#fff;border:1px solid #d0d5e0;border-radius:8px;padding:8px;font-size:14px;color:#0a0d14">' + selC1 + '</select></div>'
+            + '<div><label style="font-size:10px;font-weight:700;color:#3a4460;text-transform:uppercase;letter-spacing:1px">Nostro G2</label>'
+            + '<select data-dkey="' + dkey + '" data-dtype="c2" style="width:100%;background:#fff;border:1px solid #d0d5e0;border-radius:8px;padding:8px;font-size:14px;color:#0a0d14">' + selC2 + '</select></div>'
+            + '<div><label style="font-size:10px;font-weight:700;color:#7a86a0;text-transform:uppercase;letter-spacing:1px">Avversario 1</label>'
+            + '<input type="text" data-dkey="' + dkey + '" data-dtype="o1" value="' + dO1 + '" placeholder="Nome avv." style="width:100%;background:#fff;border:1px solid #d0d5e0;border-radius:8px;padding:8px;font-size:14px;color:#0a0d14"></div>'
+            + '<div><label style="font-size:10px;font-weight:700;color:#7a86a0;text-transform:uppercase;letter-spacing:1px">Avversario 2</label>'
+            + '<input type="text" data-dkey="' + dkey + '" data-dtype="o2" value="' + dO2 + '" placeholder="Nome avv." style="width:100%;background:#fff;border:1px solid #d0d5e0;border-radius:8px;padding:8px;font-size:14px;color:#0a0d14"></div>'
             + '</div>'
-            + '<div class="match-input-score">'
-            + '<input type="number" min="0" max="' + maxVal + '" value="' + lV + '" data-key="' + key + '" data-c="' + p.c + '" data-o="' + p.o + '" data-side="vinti" placeholder="0">'
-            + '<span class="match-dash">–</span>'
-            + '<input type="number" min="0" max="' + maxVal + '" value="' + lP + '" data-key="' + key + '" data-c="' + p.c + '" data-o="' + p.o + '" data-side="persi" placeholder="0">'
+            + '<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:4px 0">'
+            + '<div style="text-align:center"><div style="font-size:10px;font-weight:700;color:#3a4460;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Nostra</div>'
+            + '<input type="number" min="0" max="1" value="' + lV + '" data-dkey="' + dkey + '" data-dtype="vinti" placeholder="0" style="width:64px;text-align:center;font-family:Bebas Neue,sans-serif;font-size:28px;padding:8px;border-radius:8px;background:#f0f2f5;border:1px solid #d0d5e0;color:#0a0d14"></div>'
+            + '<span style="font-family:Bebas Neue,sans-serif;font-size:22px;color:#7a86a0">–</span>'
+            + '<div style="text-align:center"><div style="font-size:10px;font-weight:700;color:#7a86a0;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Loro</div>'
+            + '<input type="number" min="0" max="1" value="' + lP + '" data-dkey="' + dkey + '" data-dtype="persi" placeholder="0" style="width:64px;text-align:center;font-family:Bebas Neue,sans-serif;font-size:28px;padding:8px;border-radius:8px;background:#f0f2f5;border:1px solid #d0d5e0;color:#0a0d14"></div>'
             + '</div>'
             + '</div>';
-    });
+    } else {
+      // Singolo: come prima
+      round.pts.forEach(function(p) {
+        var key = p.c+'|'+p.o;
+        var ev  = exist[key] || {};
+        var lV  = ev.legVinti !== undefined ? ev.legVinti : '';
+        var lP  = ev.legPersi !== undefined ? ev.legPersi : '';
+        html += '<div class="match-input" style="background:#f0f2f5;border-left:3px solid #d0d5e0">'
+              + '<div class="match-input-names">'
+              + '<span class="match-input-name">' + p.c + '</span>'
+              + '<span class="match-input-vs">vs</span>'
+              + '<span class="match-input-name right">' + p.o + '</span>'
+              + '</div>'
+              + '<div class="match-input-score">'
+              + '<input type="number" min="0" max="2" value="' + lV + '" data-key="' + key + '" data-c="' + p.c + '" data-o="' + p.o + '" data-side="vinti" placeholder="0">'
+              + '<span class="match-dash">–</span>'
+              + '<input type="number" min="0" max="2" value="' + lP + '" data-key="' + key + '" data-c="' + p.c + '" data-o="' + p.o + '" data-side="persi" placeholder="0">'
+              + '</div>'
+              + '</div>';
+      });
+    }
   });
 
   html += '<div class="divider"></div>'
@@ -1337,10 +1382,18 @@ function renderGaraForm(garaEx, setup) {
 function updateTot() {
   const c = document.getElementById('list-gare');
   let tV = 0, tP = 0;
+  // Singoli
   c.querySelectorAll('input[data-side=vinti]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tV += v; });
   c.querySelectorAll('input[data-side=persi]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tP += v; });
+  // Doppi
+  c.querySelectorAll('input[data-dtype=vinti]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tV += v; });
+  c.querySelectorAll('input[data-dtype=persi]').forEach(i => { const v = parseInt(i.value); if (!isNaN(v)) tP += v; });
   const el = document.getElementById('gt-score');
-  if (el) el.innerHTML = `<span class="${tV>tP?'text-green':'text-red'}">${tV}</span><span class="text-muted"> – </span><span class="${tP>tV?'text-green':'text-red'}">${tP}</span>`;
+  if (el) {
+    var cV = tV>tP ? 'text-green' : 'text-red';
+    var cP = tP>tV ? 'text-green' : 'text-red';
+    el.innerHTML = '<span class="' + cV + '">' + tV + '</span><span class="text-muted"> – </span><span class="' + cP + '">' + tP + '</span>';
+  }
 }
 
 window.annullaGara = () => { garaId = null; garaSetup = null; renderGare(); };
@@ -1348,11 +1401,32 @@ window.annullaGara = () => { garaId = null; garaSetup = null; renderGare(); };
 window.salvaGaraForm = async () => {
   const cont = document.getElementById('list-gare');
   const rm = {};
+
+  // Singoli
   cont.querySelectorAll('input[data-key]').forEach(i => {
     const k = i.dataset.key;
     if (!rm[k]) rm[k] = { giocatore: i.dataset.c, avversario: i.dataset.o, legVinti: 0, legPersi: 0 };
     const v = parseInt(i.value) || 0;
     if (i.dataset.side === 'vinti') rm[k].legVinti = v; else rm[k].legPersi = v;
+  });
+
+  // Doppi: raccoglie select e input per ogni dkey
+  const dkeys = new Set();
+  cont.querySelectorAll('[data-dkey]').forEach(el => dkeys.add(el.dataset.dkey));
+  dkeys.forEach(dkey => {
+    const get = (dtype) => {
+      const el = cont.querySelector('[data-dkey="'+dkey+'"][data-dtype="'+dtype+'"]');
+      return el ? (el.value || '') : '';
+    };
+    const c1    = get('c1');
+    const c2    = get('c2');
+    const o1    = get('o1');
+    const o2    = get('o2');
+    const lV    = parseInt(get('vinti')) || 0;
+    const lP    = parseInt(get('persi')) || 0;
+    const nome  = (c1 && c2) ? c1+'&'+c2 : (c1||c2||dkey);
+    const avv   = (o1 && o2) ? o1+'&'+o2 : (o1||o2||dkey);
+    rm[dkey] = { giocatore: nome, avversario: avv, legVinti: lV, legPersi: lP, c1, c2, o1, o2 };
   });
   setLoad(true);
   try {
