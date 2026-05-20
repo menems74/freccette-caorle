@@ -1565,7 +1565,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(updateLockUI, 200);
 });
 
-function toggleLock() {
+window.toggleLock = function() {
   if (isUnlocked) {
     isUnlocked = false;
     sessionStorage.removeItem('unlocked');
@@ -1579,13 +1579,13 @@ function toggleLock() {
   }
 }
 
-function closePinModal() {
+window.closePinModal = function() {
   pinBuffer = '';
   updatePinDisplay();
   document.getElementById('pin-overlay').style.display = 'none';
 }
 
-function pinKey(k) {
+window.pinKey = function(k) {
   if (k === '⌫') { pinBuffer = pinBuffer.slice(0,-1); updatePinDisplay(); return; }
   if (pinBuffer.length >= 4) return;
   pinBuffer += k;
