@@ -609,6 +609,107 @@ select option { background:#fff; color:var(--text); }
 <div id="pin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center">
   <div style="background:#fff;border-radius:20px;padding:28px 24px;width:300px;box-shadow:0 8px 40px rgba(0,0,0,.3)">
     <div style="text-align:center;margin-bottom:6px">
+      <div style="font-size:36px">🔒</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#1B3A6B;margin-top:4px">INSERISCI PIN</div>
+      <div style="font-size:13px;color:#7a86a0;margin-top:4px">Inserisci il codice per sbloccare</div>
+    </div>
+    <!-- Display PIN -->
+    <div style="display:flex;justify-content:center;gap:10px;margin:20px 0 16px">
+      <div id="pin-d1" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pin-d2" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pin-d3" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pin-d4" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+    </div>
+    <!-- Tastierino statico -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="pin-keypad"></div>
+    <button onclick="closePinModal()" style="width:100%;margin-top:14px;padding:12px;border-radius:10px;border:2px solid #d0d5e0;background:none;color:#7a86a0;font-size:14px;font-weight:600;cursor:pointer">Annulla</button>
+  </div>
+</div>
+
+<!-- MODAL GIOCATORE -->
+<div class="modal-overlay" id="modal-g">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mg-title">NUOVO GIOCATORE</div>
+    <input type="hidden" id="gx-id">
+    <div class="fg"><label>Nome e Cognome</label><input type="text" id="gx-nome" placeholder="Mario Rossi" autocomplete="off"></div>
+    <div class="fg"><label>N° Tessera FIGeS</label><input type="text" id="gx-tess" placeholder="12345"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('modal-g')">Annulla</button>
+      <button class="btn btn-primary" onclick="salvaGiocatore()">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SINGOLO -->
+<div class="modal-overlay" id="modal-s">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="ms-title">NUOVA PARTITA</div>
+    <input type="hidden" id="sx-id">
+    <div class="fg"><label>Giocatore</label>
+      <select id="sx-giocatore"><option value="">— seleziona —</option></select></div>
+    <div class="fg"><label>Avversario</label>
+      <input type="text" id="sx-avversario" placeholder="Nome avversario" autocomplete="off"></div>
+    <div class="fg">
+      <label>Leg Vinti – Nostra Squadra</label>
+      <div class="leg-ctrl">
+        <button class="leg-btn" onclick="adjLeg('sx-vinti',-1)">−</button>
+        <div class="leg-num" id="sx-vinti">0</div>
+        <button class="leg-btn" onclick="adjLeg('sx-vinti',1)">+</button>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Leg Persi</label>
+      <div class="leg-ctrl">
+        <button class="leg-btn" onclick="adjLeg('sx-persi',-1)">−</button>
+        <div class="leg-num" id="sx-persi">0</div>
+        <button class="leg-btn" onclick="adjLeg('sx-persi',1)">+</button>
+      </div>
+    </div>
+    <div class="fg"><label>Note (opzionale)</label><input type="text" id="sx-note" placeholder=""></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('modal-s')">Annulla</button>
+      <button class="btn btn-primary" onclick="salvaSingolo()">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SETUP GARA SQUADRE -->
+<div class="modal-overlay" id="modal-sq">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-sq-title">NUOVA GARA A SQUADRE</div>
+    <div class="fg"><label>Squadra Avversaria</label>
+      <input type="text" id="gs-osp" placeholder="Nome squadra" autocomplete="off"></div>
+    <div class="fg"><label>Nostri Giocatori C1–C4</label></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="fg" style="margin:0"><label>C1</label><select id="gs-c1"><option value="">—</option></select></div>
+      <div class="fg" style="margin:0"><label>C2</label><select id="gs-c2"><option value="">—</option></select></div>
+      <div class="fg" style="margin:0"><label>C3</label><select id="gs-c3"><option value="">—</option></select></div>
+      <div class="fg" style="margin:0"><label>C4</label><select id="gs-c4"><option value="">—</option></select></div>
+    </div>
+    <div class="fg"><label>Avversari O1–O4</label></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="fg" style="margin:0"><label>O1</label><input type="text" id="gs-o1" placeholder="Nome O1"></div>
+      <div class="fg" style="margin:0"><label>O2</label><input type="text" id="gs-o2" placeholder="Nome O2"></div>
+      <div class="fg" style="margin:0"><label>O3</label><input type="text" id="gs-o3" placeholder="Nome O3"></div>
+      <div class="fg" style="margin:0"><label>O4</label><input type="text" id="gs-o4" placeholder="Nome O4"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('modal-sq')">Annulla</button>
+      <button class="btn btn-primary" onclick="avviaGara()">▶ Inizia Gara</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div class="loading-overlay" id="loading"><div class="spinner"></div></div>
+
+<!-- MODAL PIN -->
+<div id="pin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:300px;box-shadow:0 8px 40px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:6px">
       <div style="font-size:36px" id="pin-icon">🔒</div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#1B3A6B;margin-top:4px" id="pin-title">INSERISCI PIN</div>
       <div style="font-size:13px;color:#7a86a0;margin-top:4px" id="pin-subtitle">Inserisci il codice per sbloccare la modifica</div>
@@ -756,6 +857,7 @@ function renderGiocatori() {
       </div>
     </div>`;
   }).join('');
+  setTimeout(applyEditButtons, 0);
 }
 
 window.openGiocatore = (id = null) => {
@@ -848,6 +950,7 @@ function renderSingoli() {
       </div>
     </div>`;
   }).join('');
+  setTimeout(applyEditButtons, 0);
 }
 
 window.openSingolo = (id = null) => {
@@ -959,7 +1062,7 @@ function renderGare() {
         </div>
       </div>
       <div class="text-xs text-muted" style="margin-bottom:10px">${(g.giocatoriCasa||[]).join(', ')}</div>
-      <div class="item-actions">
+      <div class="item-actions gara-actions">
         <button class="btn btn-ghost btn-sm" onclick="openGara('${g.id}')">✏️ Risultati</button>
         <button class="btn btn-ghost btn-sm" onclick="openSetupGara('${g.id}')">👥 Avversari</button>
         <button class="btn btn-danger btn-sm" onclick="elimGara('${g.id}')">🗑</button>
@@ -1328,50 +1431,79 @@ const PIN_CORRETTO = '1235';
 let pinBuffer = '';
 let isUnlocked = sessionStorage.getItem('unlocked') === 'true';
 
-// Aggiorna solo l'icona del lucchetto — NON tocca i dati
+// Genera tastierino numerici via JS (evita problemi template literal in HTML)
+function buildKeypad() {
+  const keypad = document.getElementById('pin-keypad');
+  if (!keypad || keypad.children.length > 0) return;
+  const keys = [1,2,3,4,5,6,7,8,9,'',0,'⌫'];
+  keys.forEach(k => {
+    const btn = document.createElement('button');
+    btn.textContent = k;
+    btn.style.cssText = `height:56px;border-radius:12px;border:2px solid #d0d5e0;
+      background:${k===''?'transparent':'#f0f2f5'};font-size:${k==='⌫'?'20px':'22px'};
+      font-weight:700;color:#1B3A6B;cursor:${k===''?'default':'pointer'};
+      transition:background .1s;pointer-events:${k===''?'none':'auto'};`;
+    if (k !== '') {
+      btn.addEventListener('click', () => pinKey(String(k)));
+      btn.addEventListener('touchstart', () => { btn.style.background='#dce8f8'; }, {passive:true});
+      btn.addEventListener('touchend',   () => { btn.style.background='#f0f2f5'; }, {passive:true});
+    }
+    keypad.appendChild(btn);
+  });
+}
+
+// Nascondi/mostra pulsanti di modifica in base allo stato
+function applyEditButtons() {
+  // Selettori: pulsanti + Nuova/Aggiungi in cima, e azioni nelle card
+  const selectors = [
+    'button[onclick^="openSingolo()"]',
+    'button[onclick^="openNuovaGara()"]',
+    'button[onclick^="openGiocatore()"]',
+  ];
+  selectors.forEach(sel => {
+    document.querySelectorAll(sel).forEach(btn => {
+      btn.style.display = isUnlocked ? '' : 'none';
+    });
+  });
+  // Pulsanti azioni nelle item-actions (modifica/elimina)
+  document.querySelectorAll('.item-actions').forEach(el => {
+    el.style.display = isUnlocked ? 'flex' : 'none';
+  });
+  // Pulsanti azioni nelle gare
+  document.querySelectorAll('.gara-actions').forEach(el => {
+    el.style.display = isUnlocked ? 'flex' : 'none';
+  });
+}
+
 function updateLockUI() {
+  // Icona lucchetto header mobile
   const lb = document.getElementById('lock-btn');
   if (lb) lb.textContent = isUnlocked ? '🔓' : '🔒';
-
+  // Sidebar desktop
   const si = document.getElementById('sidebar-lock-icon');
   const sl = document.getElementById('sidebar-lock-label');
   const sb = document.getElementById('sidebar-lock-btn');
   if (si) si.className   = isUnlocked ? 'ti ti-lock-open' : 'ti ti-lock';
   if (sl) sl.textContent = isUnlocked ? 'Blocca' : 'Sola lettura';
   if (sb) sb.style.color = isUnlocked ? '#CC1F1F' : '';
-
-  // Banner sola lettura (sopra il contenuto)
-  let banner = document.getElementById('readonly-banner');
-  if (!isUnlocked) {
-    if (!banner) {
-      banner = document.createElement('div');
-      banner.id = 'readonly-banner';
-      banner.style.cssText = 'background:#fff3cd;border-bottom:2px solid #ffd966;padding:8px 16px;text-align:center;font-size:12px;font-weight:700;color:#8a6200;letter-spacing:.5px;z-index:9';
-      banner.textContent = '🔒 Sola lettura — tocca il lucchetto per modificare';
-      const shell = document.querySelector('.app-shell');
-      if (shell) shell.insertAdjacentElement('beforebegin', banner);
-    }
-  } else {
-    if (banner) banner.remove();
-  }
+  // Pulsanti modifica
+  applyEditButtons();
 }
 
-// Intercetta i click sui pulsanti di modifica quando bloccato
-function guardClick(fn) {
+function guardClick() {
   if (!isUnlocked) {
-    // Mostra il PIN invece di eseguire l'azione
     pinBuffer = '';
     updatePinDisplay();
+    buildKeypad();
     document.getElementById('pin-overlay').style.display = 'flex';
     return false;
   }
-  if (typeof fn === 'function') fn();
   return true;
 }
 
-// Esegui updateLockUI dopo il caricamento iniziale
 document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(updateLockUI, 100);
+  buildKeypad();
+  setTimeout(updateLockUI, 200);
 });
 
 function toggleLock() {
@@ -1383,6 +1515,7 @@ function toggleLock() {
   } else {
     pinBuffer = '';
     updatePinDisplay();
+    buildKeypad();
     document.getElementById('pin-overlay').style.display = 'flex';
   }
 }
@@ -1395,7 +1528,7 @@ function closePinModal() {
 
 function pinKey(k) {
   if (k === '⌫') { pinBuffer = pinBuffer.slice(0,-1); updatePinDisplay(); return; }
-  if (k === '' || pinBuffer.length >= 4) return;
+  if (pinBuffer.length >= 4) return;
   pinBuffer += k;
   updatePinDisplay();
   if (pinBuffer.length === 4) {
@@ -1409,7 +1542,7 @@ function pinKey(k) {
       } else {
         [1,2,3,4].forEach(i => {
           const d = document.getElementById('pin-d'+i);
-          if(d){ d.style.borderColor='#CC1F1F'; d.style.background='#fde8e8'; d.style.color='#CC1F1F'; }
+          if (d) { d.style.borderColor='#CC1F1F'; d.style.background='#fde8e8'; d.style.color='#CC1F1F'; }
         });
         setTimeout(() => { pinBuffer=''; updatePinDisplay(); toast('PIN errato ❌','error'); }, 600);
       }
