@@ -759,6 +759,7 @@ function renderGiocatori() {
 }
 
 window.openGiocatore = (id = null) => {
+  if (!guardClick()) return;
   fillSelects();
   document.getElementById('gx-id').value   = id || '';
   document.getElementById('gx-nome').value = '';
@@ -795,6 +796,7 @@ window.salvaGiocatore = async () => {
 };
 
 window.elimGiocatore = async (id) => {
+  if (!guardClick()) return;
   if (!confirm('Eliminare questo giocatore?')) return;
   setLoad(true);
   try {
@@ -849,6 +851,7 @@ function renderSingoli() {
 }
 
 window.openSingolo = (id = null) => {
+  if (!guardClick()) return;
   fillSelects();
   document.getElementById('sx-id').value          = id || '';
   document.getElementById('sx-giocatore').value   = '';
@@ -901,6 +904,7 @@ window.salvaSingolo = async () => {
 };
 
 window.elimSingolo = async (id) => {
+  if (!guardClick()) return;
   if (!confirm('Eliminare questa partita?')) return;
   setLoad(true);
   try {
@@ -965,6 +969,7 @@ function renderGare() {
 }
 
 window.openNuovaGara = () => {
+  if (!guardClick()) return;
   fillSelects();
   document.getElementById('gs-osp').value = '';
   ['gs-c1','gs-c2','gs-c3','gs-c4'].forEach(id => document.getElementById(id).value = '');
@@ -976,6 +981,7 @@ window.openNuovaGara = () => {
 };
 
 window.openSetupGara = (id) => {
+  if (!guardClick()) return;
   const g = gareSquadre.find(x => x.id === id);
   if (!g) return;
   fillSelects();
@@ -1039,6 +1045,7 @@ window.avviaGara = async () => {
 };
 
 window.openGara = async (id) => {
+  if (!guardClick()) return;
   const g = gareSquadre.find(x => x.id === id); if (!g) return;
   garaId = id;
   garaSetup = g.setup || { ospite: g.squadraOspite, c: g.giocatoriCasa || [], o: ['O1','O2','O3','O4'] };
@@ -1046,6 +1053,7 @@ window.openGara = async (id) => {
 };
 
 window.elimGara = async (id) => {
+  if (!guardClick()) return;
   if (!confirm('Eliminare questa gara?')) return;
   setLoad(true);
   try {
@@ -1320,63 +1328,59 @@ const PIN_CORRETTO = '1235';
 let pinBuffer = '';
 let isUnlocked = sessionStorage.getItem('unlocked') === 'true';
 
-// Applica stato al caricamento
-applyLockState();
-
-function applyLockState() {
-  // Pulsanti che modificano i dati
-  const editBtns = document.querySelectorAll(
-    '.btn-primary, .btn-danger, .item-actions .btn-ghost'
-  );
-  editBtns.forEach(btn => {
-    btn.style.opacity    = isUnlocked ? '1'       : '0.35';
-    btn.style.pointerEvents = isUnlocked ? 'auto' : 'none';
-  });
-
-  // Pulsanti + Nuova in cima alle pagine
-  document.querySelectorAll('[onclick^="openSingolo"], [onclick^="openNuovaGara"], [onclick^="openGiocatore"]').forEach(btn => {
-    btn.style.opacity    = isUnlocked ? '1'   : '0.35';
-    btn.style.pointerEvents = isUnlocked ? 'auto' : 'none';
-  });
-
-  // Lucchetto header mobile
+// Aggiorna solo l'icona del lucchetto — NON tocca i dati
+function updateLockUI() {
   const lb = document.getElementById('lock-btn');
   if (lb) lb.textContent = isUnlocked ? '🔓' : '🔒';
 
-  // Lucchetto sidebar desktop
   const si = document.getElementById('sidebar-lock-icon');
   const sl = document.getElementById('sidebar-lock-label');
   const sb = document.getElementById('sidebar-lock-btn');
-  if (si) si.className = isUnlocked ? 'ti ti-lock-open' : 'ti ti-lock';
+  if (si) si.className   = isUnlocked ? 'ti ti-lock-open' : 'ti ti-lock';
   if (sl) sl.textContent = isUnlocked ? 'Blocca' : 'Sola lettura';
-  if (sb) {
-    sb.style.color = isUnlocked ? '#CC1F1F' : '';
-  }
+  if (sb) sb.style.color = isUnlocked ? '#CC1F1F' : '';
 
-  // Banner sola lettura
+  // Banner sola lettura (sopra il contenuto)
   let banner = document.getElementById('readonly-banner');
   if (!isUnlocked) {
     if (!banner) {
       banner = document.createElement('div');
       banner.id = 'readonly-banner';
-      banner.style.cssText = 'background:#fff3cd;border-bottom:2px solid #ffd966;padding:8px 16px;text-align:center;font-size:12px;font-weight:700;color:#8a6200;letter-spacing:.5px;position:sticky;top:56px;z-index:9';
-      banner.textContent = '🔒 MODALITÀ SOLA LETTURA — tocca il lucchetto per modificare';
-      document.querySelector('.app-shell')?.before(banner);
+      banner.style.cssText = 'background:#fff3cd;border-bottom:2px solid #ffd966;padding:8px 16px;text-align:center;font-size:12px;font-weight:700;color:#8a6200;letter-spacing:.5px;z-index:9';
+      banner.textContent = '🔒 Sola lettura — tocca il lucchetto per modificare';
+      const shell = document.querySelector('.app-shell');
+      if (shell) shell.insertAdjacentElement('beforebegin', banner);
     }
   } else {
     if (banner) banner.remove();
   }
 }
 
+// Intercetta i click sui pulsanti di modifica quando bloccato
+function guardClick(fn) {
+  if (!isUnlocked) {
+    // Mostra il PIN invece di eseguire l'azione
+    pinBuffer = '';
+    updatePinDisplay();
+    document.getElementById('pin-overlay').style.display = 'flex';
+    return false;
+  }
+  if (typeof fn === 'function') fn();
+  return true;
+}
+
+// Esegui updateLockUI dopo il caricamento iniziale
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(updateLockUI, 100);
+});
+
 function toggleLock() {
   if (isUnlocked) {
-    // Blocca subito
     isUnlocked = false;
     sessionStorage.removeItem('unlocked');
-    applyLockState();
+    updateLockUI();
     toast('Sito bloccato 🔒', 'success');
   } else {
-    // Apri modal PIN
     pinBuffer = '';
     updatePinDisplay();
     document.getElementById('pin-overlay').style.display = 'flex';
@@ -1390,60 +1394,40 @@ function closePinModal() {
 }
 
 function pinKey(k) {
-  if (k === '⌫') {
-    pinBuffer = pinBuffer.slice(0, -1);
-    updatePinDisplay();
-    return;
-  }
+  if (k === '⌫') { pinBuffer = pinBuffer.slice(0,-1); updatePinDisplay(); return; }
   if (k === '' || pinBuffer.length >= 4) return;
   pinBuffer += k;
   updatePinDisplay();
-
   if (pinBuffer.length === 4) {
     setTimeout(() => {
       if (pinBuffer === PIN_CORRETTO) {
         isUnlocked = true;
-        sessionStorage.setItem('unlocked', 'true');
+        sessionStorage.setItem('unlocked','true');
         closePinModal();
-        applyLockState();
+        updateLockUI();
         toast('Sito sbloccato 🔓', 'success');
       } else {
-        // PIN errato: shake e reset
-        const displays = [1,2,3,4].map(i => document.getElementById('pin-d'+i));
-        displays.forEach(d => {
-          d.style.borderColor = '#CC1F1F';
-          d.style.background  = '#fde8e8';
-          d.style.color       = '#CC1F1F';
+        [1,2,3,4].forEach(i => {
+          const d = document.getElementById('pin-d'+i);
+          if(d){ d.style.borderColor='#CC1F1F'; d.style.background='#fde8e8'; d.style.color='#CC1F1F'; }
         });
-        setTimeout(() => {
-          pinBuffer = '';
-          updatePinDisplay();
-          toast('PIN errato ❌', 'error');
-        }, 600);
+        setTimeout(() => { pinBuffer=''; updatePinDisplay(); toast('PIN errato ❌','error'); }, 600);
       }
     }, 80);
   }
 }
 
 function updatePinDisplay() {
-  [1,2,3,4].forEach((i) => {
+  [1,2,3,4].forEach(i => {
     const d = document.getElementById('pin-d'+i);
     if (!d) return;
     const filled = pinBuffer.length >= i;
-    d.textContent        = filled ? '●' : '';
-    d.style.borderColor  = filled ? '#1B3A6B' : '#d0d5e0';
-    d.style.background   = filled ? '#dce8f8'  : '#f0f2f5';
-    d.style.color        = '#1B3A6B';
+    d.textContent       = filled ? '●' : '';
+    d.style.borderColor = filled ? '#1B3A6B' : '#d0d5e0';
+    d.style.background  = filled ? '#dce8f8' : '#f0f2f5';
+    d.style.color       = '#1B3A6B';
   });
 }
-
-// Riapplica dopo ogni render (i pulsanti vengono ricreati)
-const _origRenderGiocatori = renderGiocatori;
-const _origRenderSingoli   = renderSingoli;
-const _origRenderGare      = renderGare;
-function renderGiocatori(...a){ _origRenderGiocatori(...a); setTimeout(applyLockState,0); }
-function renderSingoli(...a)  { _origRenderSingoli(...a);   setTimeout(applyLockState,0); }
-function renderGare(...a)     { _origRenderGare(...a);       setTimeout(applyLockState,0); }
 </script>
 </body>
 </html>
