@@ -414,10 +414,11 @@ select option { background:#fff; color:var(--text); }
 <!-- HEADER MOBILE (nascosto su desktop) -->
 <div class="header" id="mob-header">
   <img src="glintelligenti_NEW_LOGO.png" alt="Logo" style="width:44px;height:44px;object-fit:contain;border-radius:6px;flex-shrink:0">
-  <div>
+  <div style="flex:1">
     <div class="header-title">Glintelligenti</div>
     <div class="header-sub">Campionato Nazionale 2026</div>
   </div>
+  <button id="lock-btn" onclick="toggleLock()" style="background:none;border:none;cursor:pointer;font-size:26px;padding:4px 8px;line-height:1;-webkit-tap-highlight-color:transparent" title="Sblocca modifica">🔒</button>
 </div>
 
 <!-- APP SHELL: sidebar + contenuto -->
@@ -497,6 +498,11 @@ select option { background:#fff; color:var(--text); }
   <div class="sidebar-divider"></div>
   <button class="side-item" id="sn-giocatori" onclick="goTo('giocatori')">
     <i class="ti ti-users"></i><span>Giocatori</span>
+  </button>
+  <div style="flex:1"></div>
+  <div class="sidebar-divider"></div>
+  <button class="side-item" onclick="toggleLock()" id="sidebar-lock-btn">
+    <i class="ti ti-lock" id="sidebar-lock-icon"></i><span id="sidebar-lock-label">Sola lettura</span>
   </button>
 </div>
 
@@ -598,6 +604,32 @@ select option { background:#fff; color:var(--text); }
 
 <div id="toast"></div>
 <div class="loading-overlay" id="loading"><div class="spinner"></div></div>
+
+<!-- MODAL PIN -->
+<div id="pin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:300px;box-shadow:0 8px 40px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:6px">
+      <div style="font-size:36px" id="pin-icon">🔒</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#1B3A6B;margin-top:4px" id="pin-title">INSERISCI PIN</div>
+      <div style="font-size:13px;color:#7a86a0;margin-top:4px" id="pin-subtitle">Inserisci il codice per sbloccare la modifica</div>
+    </div>
+    <!-- Display PIN -->
+    <div style="display:flex;justify-content:center;gap:10px;margin:20px 0 16px">
+      <div id="pin-d1" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pin-d2" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pin-d3" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pin-d4" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+    </div>
+    <!-- Tastierino -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k => `
+      <button onclick="pinKey('${k}')" style="height:56px;border-radius:12px;border:2px solid #d0d5e0;background:${k===''?'transparent':'#f0f2f5'};font-size:${k==='⌫'?'20px':'22px'};font-weight:700;color:#1B3A6B;cursor:${k===''?'default':'pointer'};transition:all .1s;pointer-events:${k===''?'none':'auto'}"
+        onmousedown="this.style.background='#dce8f8'" onmouseup="this.style.background='#f0f2f5'" ontouchstart="this.style.background='#dce8f8'" ontouchend="this.style.background='#f0f2f5'"
+      >${k}</button>`).join('')}
+    </div>
+    <button onclick="closePinModal()" style="width:100%;margin-top:14px;padding:12px;border-radius:10px;border:2px solid #d0d5e0;background:none;color:#7a86a0;font-size:14px;font-weight:600;cursor:pointer">Annulla</button>
+  </div>
+</div>
 
 <!-- FIREBASE SDK -->
 <script type="module">
@@ -1280,6 +1312,138 @@ window.toast = (msg, type = 'info') => {
 document.querySelectorAll('.modal-overlay').forEach(o =>
   o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
 );
+
+// ════════════════════════════════════
+// PIN & SOLA LETTURA
+// ════════════════════════════════════
+const PIN_CORRETTO = '1235';
+let pinBuffer = '';
+let isUnlocked = sessionStorage.getItem('unlocked') === 'true';
+
+// Applica stato al caricamento
+applyLockState();
+
+function applyLockState() {
+  // Pulsanti che modificano i dati
+  const editBtns = document.querySelectorAll(
+    '.btn-primary, .btn-danger, .item-actions .btn-ghost'
+  );
+  editBtns.forEach(btn => {
+    btn.style.opacity    = isUnlocked ? '1'       : '0.35';
+    btn.style.pointerEvents = isUnlocked ? 'auto' : 'none';
+  });
+
+  // Pulsanti + Nuova in cima alle pagine
+  document.querySelectorAll('[onclick^="openSingolo"], [onclick^="openNuovaGara"], [onclick^="openGiocatore"]').forEach(btn => {
+    btn.style.opacity    = isUnlocked ? '1'   : '0.35';
+    btn.style.pointerEvents = isUnlocked ? 'auto' : 'none';
+  });
+
+  // Lucchetto header mobile
+  const lb = document.getElementById('lock-btn');
+  if (lb) lb.textContent = isUnlocked ? '🔓' : '🔒';
+
+  // Lucchetto sidebar desktop
+  const si = document.getElementById('sidebar-lock-icon');
+  const sl = document.getElementById('sidebar-lock-label');
+  const sb = document.getElementById('sidebar-lock-btn');
+  if (si) si.className = isUnlocked ? 'ti ti-lock-open' : 'ti ti-lock';
+  if (sl) sl.textContent = isUnlocked ? 'Blocca' : 'Sola lettura';
+  if (sb) {
+    sb.style.color = isUnlocked ? '#CC1F1F' : '';
+  }
+
+  // Banner sola lettura
+  let banner = document.getElementById('readonly-banner');
+  if (!isUnlocked) {
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'readonly-banner';
+      banner.style.cssText = 'background:#fff3cd;border-bottom:2px solid #ffd966;padding:8px 16px;text-align:center;font-size:12px;font-weight:700;color:#8a6200;letter-spacing:.5px;position:sticky;top:56px;z-index:9';
+      banner.textContent = '🔒 MODALITÀ SOLA LETTURA — tocca il lucchetto per modificare';
+      document.querySelector('.app-shell')?.before(banner);
+    }
+  } else {
+    if (banner) banner.remove();
+  }
+}
+
+function toggleLock() {
+  if (isUnlocked) {
+    // Blocca subito
+    isUnlocked = false;
+    sessionStorage.removeItem('unlocked');
+    applyLockState();
+    toast('Sito bloccato 🔒', 'success');
+  } else {
+    // Apri modal PIN
+    pinBuffer = '';
+    updatePinDisplay();
+    document.getElementById('pin-overlay').style.display = 'flex';
+  }
+}
+
+function closePinModal() {
+  pinBuffer = '';
+  updatePinDisplay();
+  document.getElementById('pin-overlay').style.display = 'none';
+}
+
+function pinKey(k) {
+  if (k === '⌫') {
+    pinBuffer = pinBuffer.slice(0, -1);
+    updatePinDisplay();
+    return;
+  }
+  if (k === '' || pinBuffer.length >= 4) return;
+  pinBuffer += k;
+  updatePinDisplay();
+
+  if (pinBuffer.length === 4) {
+    setTimeout(() => {
+      if (pinBuffer === PIN_CORRETTO) {
+        isUnlocked = true;
+        sessionStorage.setItem('unlocked', 'true');
+        closePinModal();
+        applyLockState();
+        toast('Sito sbloccato 🔓', 'success');
+      } else {
+        // PIN errato: shake e reset
+        const displays = [1,2,3,4].map(i => document.getElementById('pin-d'+i));
+        displays.forEach(d => {
+          d.style.borderColor = '#CC1F1F';
+          d.style.background  = '#fde8e8';
+          d.style.color       = '#CC1F1F';
+        });
+        setTimeout(() => {
+          pinBuffer = '';
+          updatePinDisplay();
+          toast('PIN errato ❌', 'error');
+        }, 600);
+      }
+    }, 80);
+  }
+}
+
+function updatePinDisplay() {
+  [1,2,3,4].forEach((i) => {
+    const d = document.getElementById('pin-d'+i);
+    if (!d) return;
+    const filled = pinBuffer.length >= i;
+    d.textContent        = filled ? '●' : '';
+    d.style.borderColor  = filled ? '#1B3A6B' : '#d0d5e0';
+    d.style.background   = filled ? '#dce8f8'  : '#f0f2f5';
+    d.style.color        = '#1B3A6B';
+  });
+}
+
+// Riapplica dopo ogni render (i pulsanti vengono ricreati)
+const _origRenderGiocatori = renderGiocatori;
+const _origRenderSingoli   = renderSingoli;
+const _origRenderGare      = renderGare;
+function renderGiocatori(...a){ _origRenderGiocatori(...a); setTimeout(applyLockState,0); }
+function renderSingoli(...a)  { _origRenderSingoli(...a);   setTimeout(applyLockState,0); }
+function renderGare(...a)     { _origRenderGare(...a);       setTimeout(applyLockState,0); }
 </script>
 </body>
 </html>
