@@ -1332,10 +1332,16 @@ function renderGaraForm(garaEx, setup) {
       var ev   = exist[dkey] || {};
       // Cerca prima per dkey diretto, poi per chiave giocatore
       var evD  = exist[dkey] || exist['doppio'+legN] || {};
-      var dC1  = evD.c1 || '';
-      var dC2  = evD.c2 || '';
-      var dO1  = evD.o1 || '';
-      var dO2  = evD.o2 || '';
+      // Precompila con valori default se non ancora salvato
+      // Doppio 1: C1&C2 vs O1&O2 — Doppio 2: C3&C4 vs O3&O4 — Doppio 3: vuoto
+      var defC1 = legN===1 ? c[0] : legN===2 ? c[2] : '';
+      var defC2 = legN===1 ? c[1] : legN===2 ? c[3] : '';
+      var defO1 = legN===1 ? o[0] : legN===2 ? o[2] : '';
+      var defO2 = legN===1 ? o[1] : legN===2 ? o[3] : '';
+      var dC1  = evD.c1 || defC1;
+      var dC2  = evD.c2 || defC2;
+      var dO1  = evD.o1 || defO1;
+      var dO2  = evD.o2 || defO2;
       var lV   = evD.legVinti !== undefined ? evD.legVinti : '';
       var lP   = evD.legPersi !== undefined ? evD.legPersi : '';
       var selC1 = optsC.replace('value="' + dC1 + '"', 'value="' + dC1 + '" selected');
