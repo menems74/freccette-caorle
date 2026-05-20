@@ -572,7 +572,7 @@ select option { background:#fff; color:var(--text); }
 <div class="modal-overlay" id="modal-sq">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">NUOVA GARA A SQUADRE</div>
+    <div class="modal-title" id="modal-sq-title">NUOVA GARA A SQUADRE</div>
     <div class="fg"><label>Squadra Avversaria</label>
       <input type="text" id="gs-osp" placeholder="Nome squadra" autocomplete="off"></div>
     <div class="fg"><label>Nostri Giocatori C1–C4</label></div>
@@ -924,8 +924,9 @@ function renderGare() {
       </div>
       <div class="text-xs text-muted" style="margin-bottom:10px">${(g.giocatoriCasa||[]).join(', ')}</div>
       <div class="item-actions">
-        <button class="btn btn-ghost btn-sm" onclick="openGara('${g.id}')">✏️ Modifica</button>
-        <button class="btn btn-danger btn-sm" onclick="elimGara('${g.id}')">🗑 Elimina</button>
+        <button class="btn btn-ghost btn-sm" onclick="openGara('${g.id}')">✏️ Risultati</button>
+        <button class="btn btn-ghost btn-sm" onclick="openSetupGara('${g.id}')">👥 Avversari</button>
+        <button class="btn btn-danger btn-sm" onclick="elimGara('${g.id}')">🗑</button>
       </div>
     </div>`;
   }).join('');
@@ -937,19 +938,72 @@ window.openNuovaGara = () => {
   ['gs-c1','gs-c2','gs-c3','gs-c4'].forEach(id => document.getElementById(id).value = '');
   ['gs-o1','gs-o2','gs-o3','gs-o4'].forEach(id => document.getElementById(id).value = '');
   garaId = null;
+  document.getElementById('modal-sq').dataset.mode = 'new';
+  document.getElementById('modal-sq-title').textContent = 'NUOVA GARA A SQUADRE';
   document.getElementById('modal-sq').classList.add('open');
 };
 
-window.avviaGara = () => {
+window.openSetupGara = (id) => {
+  const g = gareSquadre.find(x => x.id === id);
+  if (!g) return;
+  fillSelects();
+
+  // Recupera setup esistente
+  const setup = g.setup || { ospite: g.squadraOspite, c: g.giocatoriCasa || [], o: ['O1','O2','O3','O4'] };
+
+  // Popola il modal con i dati esistenti
+  document.getElementById('gs-osp').value = setup.ospite || '';
+  ['gs-c1','gs-c2','gs-c3','gs-c4'].forEach((elId, i) => {
+    document.getElementById(elId).value = setup.c[i] || '';
+  });
+  ['gs-o1','gs-o2','gs-o3','gs-o4'].forEach((elId, i) => {
+    document.getElementById(elId).value = setup.o[i] || '';
+  });
+
+  // Segna che stiamo modificando questa gara
+  garaId = id;
+  // Flag: modifica solo setup, non avvia nuova gara
+  document.getElementById('modal-sq').dataset.mode = 'edit';
+  document.getElementById('modal-sq-title').textContent = 'MODIFICA AVVERSARI';
+  document.getElementById('modal-sq').classList.add('open');
+};
+
+window.avviaGara = async () => {
   const ospite = document.getElementById('gs-osp').value.trim();
   const c = [1,2,3,4].map(i => document.getElementById('gs-c'+i).value);
   const o = [1,2,3,4].map(i => document.getElementById('gs-o'+i).value.trim());
   if (!ospite)         { toast('Inserisci la squadra avversaria', 'error'); return; }
   if (c.some(v => !v)) { toast('Seleziona tutti e 4 i giocatori', 'error'); return; }
   if (o.some(v => !v)) { toast('Inserisci i 4 avversari', 'error'); return; }
-  garaSetup = { ospite, c, o };
-  closeModal('modal-sq');
-  renderGaraForm(null, garaSetup);
+
+  const mode = document.getElementById('modal-sq').dataset.mode;
+
+  if (mode === 'edit' && garaId) {
+    // Modalità modifica: aggiorna solo setup e giocatori, mantieni i rounds
+    const newSetup = { ospite, c, o };
+    setLoad(true);
+    try {
+      await updateDoc(doc(db, 'gareSquadre', garaId), {
+        squadraOspite: ospite,
+        giocatoriCasa: c,
+        setup: newSetup
+      });
+      toast('Setup aggiornato', 'success');
+      closeModal('modal-sq');
+      document.getElementById('modal-sq').dataset.mode = '';
+      await loadGare();
+      renderGiocatori();
+      renderHome();
+    } catch(e) { toast('Errore: ' + e.message, 'error'); }
+    setLoad(false);
+    garaId = null;
+  } else {
+    // Modalità nuova gara
+    garaSetup = { ospite, c, o };
+    closeModal('modal-sq');
+    document.getElementById('modal-sq').dataset.mode = '';
+    renderGaraForm(null, garaSetup);
+  }
 };
 
 window.openGara = async (id) => {
