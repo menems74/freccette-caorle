@@ -1290,17 +1290,17 @@ function renderGaraForm(garaEx, setup) {
     const borderLeft = isSpareg ? '3px solid #f0c040' : isDoppio ? '3px solid #1B3A6B' : '3px solid #d0d5e0';
     const nota       = isSpareg ? ' <span style="font-size:10px;color:#8a6200;font-weight:700">Solo se 1° e 2° leg in parità</span>' : isDoppio ? ' <span style="font-size:10px;color:#1B3A6B">Risultato 1–0</span>' : '';
 
-    html += \`<div class="round-head" style="\${isSpareg?'border-bottom-color:#f0c040':isDoppio?'border-bottom-color:#1B3A6B':''}">
+    html += `<div class="round-head" style="\${isSpareg?'border-bottom-color:#f0c040':isDoppio?'border-bottom-color:#1B3A6B':''}">
       <span class="round-num" style="\${isSpareg?'background:#f0c040;color:#0a0d14':isDoppio?'background:#1B3A6B':''}">\${round.n}</span>
       <span class="round-label">\${round.label}\${nota}</span>
-    </div>\`;
+    </div>`;
 
     round.pts.forEach(p => {
       const key = p.c+'|'+p.o;
       const ev  = exist[key] || {};
       const lV  = ev.legVinti !== undefined ? ev.legVinti : '';
       const lP  = ev.legPersi !== undefined ? ev.legPersi : '';
-      html += \`<div class="match-input" style="background:\${bgColor};border-left:\${borderLeft}">
+      html += `<div class="match-input" style="background:\${bgColor};border-left:\${borderLeft}">
         <div class="match-input-names">
           <span class="match-input-name">\${p.c}</span>
           <span class="match-input-vs">vs</span>
@@ -1311,7 +1311,7 @@ function renderGaraForm(garaEx, setup) {
           <span class="match-dash">–</span>
           <input type="number" min="0" max="\${maxVal}" value="\${lP}" data-key="\${key}" data-c="\${p.c}" data-o="\${p.o}" data-side="persi" placeholder="0">
         </div>
-      </div>\`;
+      </div>`;
     });
   });
 
