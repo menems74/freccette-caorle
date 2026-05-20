@@ -413,12 +413,13 @@ select option { background:#fff; color:var(--text); }
 
 <!-- HEADER MOBILE (nascosto su desktop) -->
 <div class="header" id="mob-header" style="z-index:50;position:relative">
-  <img src="glintelligenti_NEW_LOGO.png" alt="Logo" style="width:44px;height:44px;object-fit:contain;border-radius:6px;flex-shrink:0">
-  <div style="flex:1">
-    <div class="header-title">Glintelligenti</div>
-    <div class="header-sub">Campionato Nazionale 2026</div>
+  <div style="display:flex;align-items:center;gap:12px;flex:1;cursor:pointer" onclick="goTo('home')">
+    <img src="glintelligenti_NEW_LOGO.png" alt="Logo" style="width:44px;height:44px;object-fit:contain;border-radius:6px;flex-shrink:0">
+    <div>
+      <div class="header-title">Glintelligenti</div>
+      <div class="header-sub">Campionato Nazionale 2026</div>
+    </div>
   </div>
-  <button id="lock-btn" onclick="toggleLock()" style="background:none;border:none;cursor:pointer;font-size:26px;padding:4px 8px;line-height:1;-webkit-tap-highlight-color:transparent;position:relative;z-index:60;min-width:44px;min-height:44px" title="Sblocca modifica">🔒</button>
 </div>
 
 <!-- APP SHELL: sidebar + contenuto -->
@@ -486,8 +487,8 @@ select option { background:#fff; color:var(--text); }
     </div>
   </div>
   <div class="sidebar-divider"></div>
-  <button class="side-item active" id="sn-home" onclick="goTo('home')">
-    <i class="ti ti-home"></i><span>Home</span>
+  <button class="side-item" id="sn-lock" onclick="toggleLock()">
+    <i class="ti ti-lock" id="sidebar-lock-icon"></i><span id="sidebar-lock-label">Sola lettura</span>
   </button>
   <button class="side-item" id="sn-singoli" onclick="goTo('singoli')">
     <i class="ti ti-target"></i><span>Singoli</span>
@@ -499,17 +500,13 @@ select option { background:#fff; color:var(--text); }
   <button class="side-item" id="sn-giocatori" onclick="goTo('giocatori')">
     <i class="ti ti-users"></i><span>Giocatori</span>
   </button>
-  <div style="flex:1"></div>
-  <div class="sidebar-divider"></div>
-  <button class="side-item" onclick="toggleLock()" id="sidebar-lock-btn">
-    <i class="ti ti-lock" id="sidebar-lock-icon"></i><span id="sidebar-lock-label">Sola lettura</span>
-  </button>
+
 </div>
 
 <!-- BARRA MOBILE -->
 <div class="mob-bar" id="mob-bar">
-  <button class="mob-item active" id="mn-home" onclick="goTo('home')">
-    <i class="ti ti-home"></i>
+  <button class="mob-item" id="mn-lock" onclick="toggleLock()">
+    <i class="ti ti-lock" id="mn-lock-icon"></i>
   </button>
   <button class="mob-item" id="mn-singoli" onclick="goTo('singoli')">
     <i class="ti ti-target"></i>
@@ -773,18 +770,17 @@ window.goTo = (page) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
 
-  // Sidebar desktop
-  document.querySelectorAll('.side-item').forEach(t => t.classList.remove('active'));
+  // Sidebar desktop: attiva solo voci di navigazione (non lock)
+  document.querySelectorAll('.side-item:not(#sn-lock)').forEach(t => t.classList.remove('active'));
   const sn = document.getElementById('sn-' + page);
   if (sn) sn.classList.add('active');
 
-  // Barra mobile
-  document.querySelectorAll('.mob-item').forEach(t => t.classList.remove('active'));
+  // Barra mobile: attiva solo voci di navigazione (non lock)
+  document.querySelectorAll('.mob-item:not(#mn-lock)').forEach(t => t.classList.remove('active'));
   const mn = document.getElementById('mn-' + page);
   if (mn) mn.classList.add('active');
 
   if (page === 'home') renderHome();
-  // Su mobile scrolla in cima al contenuto, su desktop scrolla la finestra
   const mc = document.getElementById('main-content');
   if (mc) mc.scrollTop = 0;
   window.scrollTo(0, 0);
@@ -1535,16 +1531,20 @@ function applyEditButtons() {
 }
 
 function updateLockUI() {
-  // Icona lucchetto header mobile
-  const lb = document.getElementById('lock-btn');
-  if (lb) lb.textContent = isUnlocked ? '🔓' : '🔒';
-  // Sidebar desktop
+  // Icona sidebar desktop
   const si = document.getElementById('sidebar-lock-icon');
   const sl = document.getElementById('sidebar-lock-label');
-  const sb = document.getElementById('sidebar-lock-btn');
+  const sn = document.getElementById('sn-lock');
   if (si) si.className   = isUnlocked ? 'ti ti-lock-open' : 'ti ti-lock';
   if (sl) sl.textContent = isUnlocked ? 'Blocca' : 'Sola lettura';
-  if (sb) sb.style.color = isUnlocked ? '#CC1F1F' : '';
+  if (sn) sn.style.color = isUnlocked ? '#CC1F1F' : '';
+
+  // Icona barra mobile
+  const mi = document.getElementById('mn-lock-icon');
+  const mb = document.getElementById('mn-lock');
+  if (mi) mi.className = isUnlocked ? 'ti ti-lock-open' : 'ti ti-lock';
+  if (mb) mb.style.color = isUnlocked ? '#CC1F1F' : 'rgba(255,255,255,.5)';
+
   // Pulsanti modifica
   applyEditButtons();
 }
