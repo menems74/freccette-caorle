@@ -526,6 +526,25 @@ select option { background:#fff; color:var(--text); }
 </div><!-- /main-content -->
 </div><!-- /app-shell -->
 
+<!-- MODAL CAMBIO PIN -->
+<div id="pin-change-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:300px;box-shadow:0 8px 40px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:6px">
+      <div style="font-size:36px">🔑</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#1B3A6B;margin-top:4px" id="pin-change-title">INSERISCI NUOVO PIN</div>
+      <div style="font-size:13px;color:#7a86a0;margin-top:4px" id="pin-change-subtitle">Scegli un nuovo PIN di 4 cifre</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:10px;margin:20px 0 16px">
+      <div id="pcd1" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pcd2" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pcd3" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pcd4" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="pin-change-keypad"></div>
+    <button onclick="closePinChange()" style="width:100%;margin-top:14px;padding:12px;border-radius:10px;border:2px solid #d0d5e0;background:none;color:#7a86a0;font-size:14px;font-weight:600;cursor:pointer">Annulla</button>
+  </div>
+</div>
+
 <!-- MODAL RISULTATI (sola lettura) -->
 <div class="modal-overlay" id="modal-risultati">
   <div class="modal-sheet">
@@ -636,6 +655,25 @@ select option { background:#fff; color:var(--text); }
     <!-- Tastierino statico -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="pin-keypad"></div>
     <button onclick="closePinModal()" style="width:100%;margin-top:14px;padding:12px;border-radius:10px;border:2px solid #d0d5e0;background:none;color:#7a86a0;font-size:14px;font-weight:600;cursor:pointer">Annulla</button>
+  </div>
+</div>
+
+<!-- MODAL CAMBIO PIN -->
+<div id="pin-change-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:300px;box-shadow:0 8px 40px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:6px">
+      <div style="font-size:36px">🔑</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#1B3A6B;margin-top:4px" id="pin-change-title">INSERISCI NUOVO PIN</div>
+      <div style="font-size:13px;color:#7a86a0;margin-top:4px" id="pin-change-subtitle">Scegli un nuovo PIN di 4 cifre</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:10px;margin:20px 0 16px">
+      <div id="pcd1" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pcd2" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pcd3" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+      <div id="pcd4" style="width:44px;height:44px;border-radius:10px;border:2px solid #d0d5e0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1B3A6B"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="pin-change-keypad"></div>
+    <button onclick="closePinChange()" style="width:100%;margin-top:14px;padding:12px;border-radius:10px;border:2px solid #d0d5e0;background:none;color:#7a86a0;font-size:14px;font-weight:600;cursor:pointer">Annulla</button>
   </div>
 </div>
 
@@ -1633,29 +1671,53 @@ document.querySelectorAll('.modal-overlay').forEach(o =>
 // ════════════════════════════════════
 // PIN & SOLA LETTURA
 // ════════════════════════════════════
-const PIN_CORRETTO = '1235';
-let pinBuffer = '';
-let isUnlocked = sessionStorage.getItem('unlocked') === 'true';
+const PIN_MASTER = '9999'; // PIN master per cambio PIN — non modificabile
+let pinCorretto  = '1235'; // valore default, viene sovrascritto da Firestore
+let pinBuffer    = '';
+let pinChangeBuffer = '';
+let pinChangeStep   = 'new'; // 'new' | 'confirm'
+let pinNewTemp      = '';
+let isUnlocked   = sessionStorage.getItem('unlocked') === 'true';
 
-// Genera tastierino numerici via JS (evita problemi template literal in HTML)
-function buildKeypad() {
-  const keypad = document.getElementById('pin-keypad');
+// Carica PIN da Firestore all'avvio
+async function loadPin() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'settings'));
+    if (snap.exists() && snap.data().pin) {
+      pinCorretto = snap.data().pin;
+    } else {
+      // Prima volta: salva il default
+      await setDoc(doc(db, 'config', 'settings'), { pin: pinCorretto });
+    }
+  } catch(e) {
+    console.warn('PIN non caricato da Firestore, uso default');
+  }
+}
+
+// Costruisce un tastierino generico su un container
+function buildKeypadIn(containerId, onKeyFn) {
+  const keypad = document.getElementById(containerId);
   if (!keypad || keypad.children.length > 0) return;
   const keys = [1,2,3,4,5,6,7,8,9,'',0,'⌫'];
   keys.forEach(k => {
     const btn = document.createElement('button');
     btn.textContent = k;
-    btn.style.cssText = `height:56px;border-radius:12px;border:2px solid #d0d5e0;
-      background:${k===''?'transparent':'#f0f2f5'};font-size:${k==='⌫'?'20px':'22px'};
-      font-weight:700;color:#1B3A6B;cursor:${k===''?'default':'pointer'};
-      transition:background .1s;pointer-events:${k===''?'none':'auto'};`;
+    btn.style.cssText = 'height:56px;border-radius:12px;border:2px solid #d0d5e0;'
+      + 'background:' + (k==='' ? 'transparent' : '#f0f2f5') + ';'
+      + 'font-size:' + (k==='⌫' ? '20px' : '22px') + ';'
+      + 'font-weight:700;color:#1B3A6B;cursor:' + (k==='' ? 'default' : 'pointer') + ';'
+      + 'transition:background .1s;pointer-events:' + (k==='' ? 'none' : 'auto') + ';';
     if (k !== '') {
-      btn.addEventListener('click', () => pinKey(String(k)));
-      btn.addEventListener('touchstart', () => { btn.style.background='#dce8f8'; }, {passive:true});
-      btn.addEventListener('touchend',   () => { btn.style.background='#f0f2f5'; }, {passive:true});
+      btn.addEventListener('click', function(){ onKeyFn(String(k)); });
+      btn.addEventListener('touchstart', function(){ btn.style.background='#dce8f8'; }, {passive:true});
+      btn.addEventListener('touchend',   function(){ btn.style.background='#f0f2f5'; }, {passive:true});
     }
     keypad.appendChild(btn);
   });
+}
+
+function buildKeypad() {
+  buildKeypadIn('pin-keypad', window.pinKey);
 }
 
 // Nascondi/mostra pulsanti di modifica in base allo stato
@@ -1711,8 +1773,10 @@ function guardClick() {
   return true;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadPin();
   buildKeypad();
+  buildKeypadIn('pin-change-keypad', window.pinChangeKey);
   setTimeout(updateLockUI, 200);
 });
 
@@ -1743,12 +1807,17 @@ window.pinKey = function(k) {
   updatePinDisplay();
   if (pinBuffer.length === 4) {
     setTimeout(() => {
-      if (pinBuffer === PIN_CORRETTO) {
+      if (pinBuffer === pinCorretto) {
+        // PIN corretto: sblocca
         isUnlocked = true;
         sessionStorage.setItem('unlocked','true');
         closePinModal();
         updateLockUI();
         toast('Sito sbloccato 🔓', 'success');
+      } else if (pinBuffer === PIN_MASTER) {
+        // PIN master: apri cambio PIN
+        closePinModal();
+        openPinChange();
       } else {
         [1,2,3,4].forEach(i => {
           const d = document.getElementById('pin-d'+i);
@@ -1765,6 +1834,84 @@ function updatePinDisplay() {
     const d = document.getElementById('pin-d'+i);
     if (!d) return;
     const filled = pinBuffer.length >= i;
+    d.textContent       = filled ? '●' : '';
+    d.style.borderColor = filled ? '#1B3A6B' : '#d0d5e0';
+    d.style.background  = filled ? '#dce8f8' : '#f0f2f5';
+    d.style.color       = '#1B3A6B';
+  });
+}
+
+// ── CAMBIO PIN ──────────────────────────────
+function openPinChange() {
+  pinChangeBuffer = '';
+  pinChangeStep   = 'new';
+  pinNewTemp      = '';
+  updatePinChangeDisplay();
+  document.getElementById('pin-change-title').textContent    = 'NUOVO PIN';
+  document.getElementById('pin-change-subtitle').textContent = 'Scegli un nuovo PIN di 4 cifre';
+  document.getElementById('pin-change-overlay').style.display = 'flex';
+}
+
+window.closePinChange = function() {
+  pinChangeBuffer = '';
+  pinChangeStep   = 'new';
+  pinNewTemp      = '';
+  updatePinChangeDisplay();
+  document.getElementById('pin-change-overlay').style.display = 'none';
+};
+
+window.pinChangeKey = function(k) {
+  if (k === '⌫') { pinChangeBuffer = pinChangeBuffer.slice(0,-1); updatePinChangeDisplay(); return; }
+  if (pinChangeBuffer.length >= 4) return;
+  pinChangeBuffer += k;
+  updatePinChangeDisplay();
+  if (pinChangeBuffer.length === 4) {
+    setTimeout(async () => {
+      if (pinChangeStep === 'new') {
+        // Primo step: memorizza il nuovo PIN e chiedi conferma
+        pinNewTemp      = pinChangeBuffer;
+        pinChangeBuffer = '';
+        pinChangeStep   = 'confirm';
+        updatePinChangeDisplay();
+        document.getElementById('pin-change-title').textContent    = 'CONFERMA PIN';
+        document.getElementById('pin-change-subtitle').textContent = 'Inserisci di nuovo il nuovo PIN';
+      } else {
+        // Secondo step: confronta
+        if (pinChangeBuffer === pinNewTemp) {
+          // Salva su Firestore
+          try {
+            await setDoc(doc(db, 'config', 'settings'), { pin: pinChangeBuffer });
+            pinCorretto = pinChangeBuffer;
+            window.closePinChange();
+            toast('PIN aggiornato ✓', 'success');
+          } catch(e) {
+            toast('Errore salvataggio PIN', 'error');
+          }
+        } else {
+          // PIN non coincide: reset al primo step
+          [1,2,3,4].forEach(i => {
+            const d = document.getElementById('pcd'+i);
+            if (d) { d.style.borderColor='#CC1F1F'; d.style.background='#fde8e8'; d.style.color='#CC1F1F'; }
+          });
+          setTimeout(() => {
+            pinChangeBuffer = '';
+            pinNewTemp      = '';
+            pinChangeStep   = 'new';
+            updatePinChangeDisplay();
+            document.getElementById('pin-change-title').textContent    = 'NUOVO PIN';
+            document.getElementById('pin-change-subtitle').textContent = 'I PIN non coincidono. Riprova.';
+          }, 600);
+        }
+      }
+    }, 80);
+  }
+};
+
+function updatePinChangeDisplay() {
+  [1,2,3,4].forEach(i => {
+    const d = document.getElementById('pcd'+i);
+    if (!d) return;
+    const filled = pinChangeBuffer.length >= i;
     d.textContent       = filled ? '●' : '';
     d.style.borderColor = filled ? '#1B3A6B' : '#d0d5e0';
     d.style.background  = filled ? '#dce8f8' : '#f0f2f5';
